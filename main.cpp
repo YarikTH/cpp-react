@@ -13,9 +13,9 @@ int main() {
             return a * a;
         });
 
-    cout << var << ", " << square;
+    cout << var << ", " << square << endl;
     var = 2;
-    cout << var << ", " << square;
+    cout << var << ", " << square << endl;
 
     cout << "end testing" << endl;
 
