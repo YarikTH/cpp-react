@@ -13,11 +13,9 @@ namespace react {
         Var() = default;
         Var(const StoredType & newValue):
             value(newValue) {
-            // TODO: implement change notification
         }
         Var(StoredType && newValue):
             value(std::move(newValue)) {
-            // TODO: implement change notification
         }
 
         Var & operator= (const StoredType & newValue) {
