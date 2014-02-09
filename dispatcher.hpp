@@ -22,7 +22,7 @@ namespace react {
         }
         template <class T2, class CALLABLE>
         void connect(const Var<StoredType> & source,
-                     const Rx<StoredType, T2, CALLABLE> & dest,
+                     const Rx<StoredType, T2> & dest,
                      CALLABLE function) {
             // TODO implement this
         }
@@ -30,7 +30,7 @@ namespace react {
             // TODO implement this
         }
         template <class T2, class CALLABLE>
-        void disconnect(const Rx<StoredType, T2, CALLABLE> & dest) {
+        void disconnect(const Rx<StoredType, T2> & dest) {
             // TODO implement this
         }
         void notifyChange(const Var<StoredType> & source) {

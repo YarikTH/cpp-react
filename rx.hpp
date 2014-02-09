@@ -13,15 +13,14 @@ namespace react {
     template <class T>
     class Dispatcher;
 
-    template <class T1, class T2, class CALLABLE>
+    template <class T1, class T2>
     class Rx : public Var<T1> {
     public:
-        using DestType = T1;
         using SourceType = T2;
-        using Source = Var<SourceType>;
+        using DestType = T1;
 
-        Rx(const Source & source, CALLABLE newFunction):
-            function(newFunction) {
+        template <class CALLABLE>
+        Rx(const Var<SourceType> & source, CALLABLE newFunction) {
             Dispatcher<SourceType>::instance().connect(source,
                                                        *this,
                                                        newFunction);
@@ -31,15 +30,14 @@ namespace react {
         }
 
     private:
-        CALLABLE function;
     };
 
     template <class T, class CALLABLE>
     auto makeRx(const Var<T> & source,
                 CALLABLE function) ->
-        Rx<decltype(function(source.getValue())), T, CALLABLE> {
+        Rx<decltype(function(source.getValue())), T> {
 
-        using Result = Rx<decltype(function(source.getValue())), T, CALLABLE>;
+        using Result = Rx<decltype(function(source.getValue())), T>;
         return Result(source, function);
     }
 
