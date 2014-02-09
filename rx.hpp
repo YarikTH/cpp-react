@@ -6,11 +6,11 @@
 
 namespace react {
 
-    template <class T, class SOURCE_T, class CALLABLE>
-    class Rx : public Var<T> {
+    template <class T1, class T2, class CALLABLE>
+    class Rx : public Var<T1> {
     public:
-        using StoredType = T;
-        using SourceType = SOURCE_T;
+        using StoredType = T1;
+        using SourceType = T2;
         using Source = Var<SourceType>;
 
         Rx(const Source & source, CALLABLE newFunction):
@@ -25,12 +25,12 @@ namespace react {
         CALLABLE function;
     };
 
-    template <class SOURCE_T, class CALLABLE>
-    auto makeRx(const Var<SOURCE_T> & source,
+    template <class T, class CALLABLE>
+    auto makeRx(const Var<T> & source,
                 CALLABLE function) ->
-        Rx<decltype(function(source.getValue())), SOURCE_T, CALLABLE> {
+        Rx<decltype(function(source.getValue())), T, CALLABLE> {
 
-        using Result = Rx<decltype(function(source.getValue())), SOURCE_T, CALLABLE>;
+        using Result = Rx<decltype(function(source.getValue())), T, CALLABLE>;
         return Result(source, function);
     }
 
