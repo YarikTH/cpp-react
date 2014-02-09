@@ -3,6 +3,7 @@
 
 #include "var.hpp"
 #include "rx.hpp"
+#include "dispatcher.hpp"
 
 namespace react {
 

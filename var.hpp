@@ -2,6 +2,7 @@
 #define VAR_HPP
 
 #include <utility>
+#include "dispatcher.hpp"
 
 namespace react {
 
@@ -10,22 +11,29 @@ namespace react {
     public:
         using StoredType = T;
 
-        Var() = default;
+        Var() {
+            Dispatcher<StoredType>::instance().connect(*this);
+        }
         Var(const StoredType & newValue):
             value(newValue) {
+            Dispatcher<StoredType>::instance().connect(*this);
         }
         Var(StoredType && newValue):
             value(std::move(newValue)) {
+            Dispatcher<StoredType>::instance().connect(*this);
+        }
+        ~Var() {
+            Dispatcher<StoredType>::instance().disconnect(*this);
         }
 
         Var & operator= (const StoredType & newValue) {
             value = newValue;
-            // TODO: implement change notification
+            Dispatcher<StoredType>::instance().notifyChange(*this);
             return *this;
         }
         Var & operator= (StoredType && newValue) {
             value = std::move(newValue);
-            // TODO: implement change notification
+            Dispatcher<StoredType>::instance().notifyChange(*this);
             return *this;
         }
 
