@@ -1,4 +1,4 @@
 cpp-react
 =========
 
-C++11 micro-framework for reactive programming
+C++1y micro-framework for reactive programming
