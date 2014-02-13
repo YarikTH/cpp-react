@@ -51,8 +51,19 @@ namespace react {
             return value;
         }
 
+        auto getId() const {
+            return id;
+        }
+
     private:
+        static auto genId() {
+            // TODO: use real generation
+            static auto idPending = 0;
+            return idPending++;
+        }
+
         StoredType value = StoredType{};
+        int id = genId();
     };
 
     template <class T>
