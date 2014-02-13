@@ -22,6 +22,12 @@ namespace react {
             value(std::move(newValue)) {
             Dispatcher<StoredType>::instance().connect(*this);
         }
+        template <class T2, class CALLABLE>
+        Var(const Var<T2> & source, CALLABLE newFunction) {
+            Dispatcher<T2>::instance().connect(source,
+                                               *this,
+                                               newFunction);
+        }
         ~Var() {
             Dispatcher<StoredType>::instance().disconnect(*this);
         }
@@ -57,6 +63,12 @@ namespace react {
     template <class T>
     inline auto makeVar(T && value) {
         return Var<T>(std::move(value));
+    }
+
+    template <class T, class CALLABLE>
+    inline auto makeVar(const Var<T> & source, CALLABLE function) {
+        using Result = Var<decltype(function(source.getValue()))>;
+        return Result(source, function);
     }
 
 } // namespace react

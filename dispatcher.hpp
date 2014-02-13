@@ -3,7 +3,6 @@
 
 #include <unordered_map>
 #include "var.hpp"
-#include "rx.hpp"
 
 namespace react {
 
@@ -22,15 +21,11 @@ namespace react {
         }
         template <class T2, class CALLABLE>
         void connect(const Var<StoredType> & source,
-                     const Rx<StoredType, T2> & dest,
+                     const Var<T2> & dest,
                      CALLABLE function) {
             // TODO implement this
         }
         void disconnect(const Var<StoredType> & source) {
-            // TODO implement this
-        }
-        template <class T2>
-        void disconnect(const Rx<StoredType, T2> & dest) {
             // TODO implement this
         }
         void notifyChange(const Var<StoredType> & source) {
