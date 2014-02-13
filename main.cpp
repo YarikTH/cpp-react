@@ -9,7 +9,7 @@ int main() {
     cout << "begin testing" << endl;
 
     auto var = makeVar(4);
-    auto square = makeRx(var, [] (int a) {
+    auto square = makeRx(var, [] (auto a) {
             return a * a;
         });
 
