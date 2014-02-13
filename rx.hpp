@@ -33,10 +33,7 @@ namespace react {
     };
 
     template <class T, class CALLABLE>
-    auto makeRx(const Var<T> & source,
-                CALLABLE function) ->
-        Rx<decltype(function(source.getValue())), T> {
-
+    auto makeRx(const Var<T> & source, CALLABLE function) {
         using Result = Rx<decltype(function(source.getValue())), T>;
         return Result(source, function);
     }

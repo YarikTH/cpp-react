@@ -1,4 +1,4 @@
-CPP_FLAGS= -std=c++11
+CPP_FLAGS= -std=c++1y -stdlib=libc++ -lc++abi
 
 all:
 	clang++ ${CPP_FLAGS} main.cpp

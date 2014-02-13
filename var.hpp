@@ -26,18 +26,18 @@ namespace react {
             Dispatcher<StoredType>::instance().disconnect(*this);
         }
 
-        Var & operator= (const StoredType & newValue) {
+        auto & operator= (const StoredType & newValue) {
             value = newValue;
             Dispatcher<StoredType>::instance().notifyChange(*this);
             return *this;
         }
-        Var & operator= (StoredType && newValue) {
+        auto & operator= (StoredType && newValue) {
             value = std::move(newValue);
             Dispatcher<StoredType>::instance().notifyChange(*this);
             return *this;
         }
 
-        const StoredType & getValue() const {
+        const auto & getValue() const {
             return value;
         }
 
@@ -50,12 +50,12 @@ namespace react {
     };
 
     template <class T>
-    inline Var<T> makeVar(const T & value) {
+    inline auto makeVar(const T & value) {
         return Var<T>(value);
     }
 
     template <class T>
-    inline Var<T> makeVar(T && value) {
+    inline auto makeVar(T && value) {
         return Var<T>(std::move(value));
     }
 

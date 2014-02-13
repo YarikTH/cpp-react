@@ -15,7 +15,7 @@ namespace react {
     public:
         using StoredType = T;
 
-        static Dispatcher & instance();
+        static auto & instance();
 
         void connect(const Var<StoredType> & source) {
             // TODO implement this
@@ -42,7 +42,7 @@ namespace react {
     };
 
     template <class T>
-    Dispatcher<T> & Dispatcher<T>::instance() {
+    auto & Dispatcher<T>::instance() {
         static Dispatcher<StoredType> dispatcher;
         return dispatcher;
     }
