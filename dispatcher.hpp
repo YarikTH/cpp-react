@@ -29,7 +29,7 @@ namespace react {
         void disconnect(const Var<StoredType> & source) {
             // TODO implement this
         }
-        template <class T2, class CALLABLE>
+        template <class T2>
         void disconnect(const Rx<StoredType, T2> & dest) {
             // TODO implement this
         }
