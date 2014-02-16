@@ -1,44 +1,58 @@
+#pragma once
+
 #ifndef DISPATCHER_HPP
 #define DISPATCHER_HPP
-
-#include <unordered_map>
-#include "var.hpp"
 
 namespace react {
 
     template <class T>
     class Var;
 
-    template <class T>
+    template <class T, class FN, class ... TS>
+    class Rx;
+
     class Dispatcher {
     public:
-        using StoredType = T;
-
         static auto & instance();
 
-        void connect(const Var<StoredType> & source) {
+        template <class T>
+        void connect(const Var<T> & var) {
             // TODO implement this
         }
-        template <class T2, class CALLABLE>
-        void connect(const Var<StoredType> & source,
-                     const Var<T2> & dest,
-                     CALLABLE function) {
+
+        template <class T, class FN, class ... TS>
+        void connect(const Rx<T, FN, TS ...> & rx,
+                     FN fn,
+                     const Var<TS> & ... sources) {
             // TODO implement this
         }
-        void disconnect(const Var<StoredType> & source) {
+
+        template <class T>
+        void disconnect(const Var<T> & var) {
             // TODO implement this
         }
-        void notifyChange(const Var<StoredType> & source) {
+
+        template <class T, class FN, class ... TS>
+        void disconnect(const Rx<T, FN, TS ...> & rx) {
             // TODO implement this
+        }
+
+        template <class T>
+        void notifyChange(const Var<T> & src) {
+            // TODO implement this
+        }
+
+        template <class T, class FN, class ... TS>
+        T compute(const Rx<T, FN, TS ...> & rx) {
+            return T{};
         }
 
     private:
         Dispatcher() = default;
     };
 
-    template <class T>
-    auto & Dispatcher<T>::instance() {
-        static Dispatcher<StoredType> dispatcher;
+    auto & Dispatcher::instance() {
+        static Dispatcher dispatcher;
         return dispatcher;
     }
 

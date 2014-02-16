@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef VAR_HPP
 #define VAR_HPP
 
@@ -9,37 +11,30 @@ namespace react {
     template <class T>
     class Var {
     public:
-        using StoredType = T;
-
         Var() {
-            Dispatcher<StoredType>::instance().connect(*this);
+            Dispatcher::instance().connect(*this);
         }
-        Var(const StoredType & newValue):
+        Var(const T & newValue):
             value(newValue) {
-            Dispatcher<StoredType>::instance().connect(*this);
+            Dispatcher::instance().connect(*this);
         }
-        Var(StoredType && newValue):
+        Var(T && newValue):
+            // value(std::forward(newValue)) {
             value(std::move(newValue)) {
-            Dispatcher<StoredType>::instance().connect(*this);
-        }
-        template <class T2, class CALLABLE>
-        Var(const Var<T2> & source, CALLABLE newFunction) {
-            Dispatcher<T2>::instance().connect(source,
-                                               *this,
-                                               newFunction);
+            Dispatcher::instance().connect(*this);
         }
         ~Var() {
-            Dispatcher<StoredType>::instance().disconnect(*this);
+            Dispatcher::instance().disconnect(*this);
         }
 
-        auto & operator= (const StoredType & newValue) {
+        auto & operator= (const T & newValue) {
             value = newValue;
-            Dispatcher<StoredType>::instance().notifyChange(*this);
+            Dispatcher::instance().notifyChange(*this);
             return *this;
         }
-        auto & operator= (StoredType && newValue) {
+        auto & operator= (T && newValue) {
             value = std::move(newValue);
-            Dispatcher<StoredType>::instance().notifyChange(*this);
+            Dispatcher::instance().notifyChange(*this);
             return *this;
         }
 
@@ -47,7 +42,7 @@ namespace react {
             return value;
         }
 
-        operator const StoredType & () {
+        operator const T & () {
             return value;
         }
 
@@ -62,7 +57,7 @@ namespace react {
             return idPending++;
         }
 
-        StoredType value = StoredType{};
+        T value = T{};
         int id = genId();
     };
 
@@ -74,12 +69,6 @@ namespace react {
     template <class T>
     inline auto makeVar(T && value) {
         return Var<T>(std::move(value));
-    }
-
-    template <class T, class CALLABLE>
-    inline auto makeVar(const Var<T> & source, CALLABLE function) {
-        using Result = Var<decltype(function(source.getValue()))>;
-        return Result(source, function);
     }
 
 } // namespace react
