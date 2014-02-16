@@ -3,7 +3,7 @@
 #ifndef VARDISPATCHER_HPP
 #define VARDISPATCHER_HPP
 
-#include <list>
+#include <unordered_set>
 #include <unordered_map>
 #include "varlistener.hpp"
 
@@ -16,7 +16,7 @@ namespace react {
     class VarDispatcher {
     public:
         using Var = Var<T>;
-        using Listeners = std::list<VarListener *>;
+        using Listeners = std::unordered_set<VarListener *>;
         using VarsListeners = std::unordered_map<const Var *, Listeners>;
 
         static auto & instance();
