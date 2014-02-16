@@ -44,6 +44,7 @@ namespace react {
 
         template <class T, class FN, class ... TS>
         T compute(const Rx<T, FN, TS ...> & rx) {
+            // TODO implement this
             return T{};
         }
 
