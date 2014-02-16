@@ -16,15 +16,18 @@ namespace react {
         Var() {
             VarDispatcher::instance().connect(*this);
         }
+
         Var(const T & newValue):
             value(newValue) {
             VarDispatcher::instance().connect(*this);
         }
+
         Var(T && newValue):
             // value(std::forward(newValue)) {
             value(std::move(newValue)) {
             VarDispatcher::instance().connect(*this);
         }
+
         ~Var() {
             VarDispatcher::instance().disconnect(*this);
         }
@@ -34,6 +37,7 @@ namespace react {
             VarDispatcher::instance().notifyChange(*this);
             return *this;
         }
+
         auto & operator= (T && newValue) {
             value = std::move(newValue);
             VarDispatcher::instance().notifyChange(*this);

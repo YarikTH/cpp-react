@@ -24,6 +24,7 @@ namespace react {
         Rx(FN fn, const Var<TS> & ... sources) {
             RxDispatcher::instance().connect(*this, fn, sources ...);
         }
+
         virtual ~Rx() {
             RxDispatcher::instance().disconnect(*this);
         }
