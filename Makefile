@@ -1,4 +1,4 @@
-CPP_FLAGS= -std=c++1y -stdlib=libc++
+CPP_FLAGS= -std=c++1y -stdlib=libc++ -I.
 LINK_FLAGS= -lc++abi
 
 all:
