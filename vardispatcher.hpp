@@ -25,8 +25,16 @@ namespace react {
             varsListeners[&var] = {};
         }
 
+        void connect(const Var & var, VarListener & listener) {
+            // TODO implement this
+        }
+
         void disconnect(const Var & var) {
             varsListeners.erase(&var);
+        }
+
+        void disconnect(const Var & var, VarListener & listener) {
+            // TODO implement this
         }
 
         void notifyChange(const Var & var) {
