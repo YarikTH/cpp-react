@@ -26,7 +26,7 @@ namespace react {
         }
 
         void connect(const Var & var, VarListener & listener) {
-            // TODO implement this
+            varsListeners[&var].insert(&listener);
         }
 
         void disconnect(const Var & var) {
@@ -34,7 +34,7 @@ namespace react {
         }
 
         void disconnect(const Var & var, VarListener & listener) {
-            // TODO implement this
+            varsListeners[&var].erase(&listener);
         }
 
         void notifyChange(const Var & var) {
