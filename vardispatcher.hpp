@@ -8,9 +8,6 @@ namespace react {
     template <class T>
     class Var;
 
-    template <class T, class FN, class ... TS>
-    class Rx;
-
     class VarDispatcher {
     public:
         static auto & instance();
