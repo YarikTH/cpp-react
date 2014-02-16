@@ -62,11 +62,11 @@ namespace react {
         return dispatcher;
     }
 
-    static void connect(VarListener &) {
+    inline void connect(VarListener &) {
     }
 
     template <class T, class ... TS>
-    static void connect(VarListener & listener,
+    inline void connect(VarListener & listener,
                         const Var<T> & var,
                         const Var<TS> & ... vars) {
         VarDispatcher<T>::instance().connect(var, listener);
