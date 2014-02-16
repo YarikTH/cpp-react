@@ -22,7 +22,7 @@ namespace react {
         static auto & instance();
 
         void connect(const Var & var) {
-            varsListeners[&var] = {};
+            varsListeners[&var];
         }
 
         void connect(const Var & var, VarListener & listener) {
@@ -60,6 +60,17 @@ namespace react {
     auto & VarDispatcher<T>::instance() {
         static VarDispatcher dispatcher;
         return dispatcher;
+    }
+
+    static void connect(VarListener &) {
+    }
+
+    template <class T, class ... TS>
+    static void connect(VarListener & listener,
+                        const Var<T> & var,
+                        const Var<TS> & ... vars) {
+        VarDispatcher<T>::instance().connect(var, listener);
+        connect(listener, vars ...);
     }
 
 }

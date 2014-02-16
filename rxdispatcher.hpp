@@ -3,6 +3,8 @@
 #ifndef RXDISPATCHER_HPP
 #define RXDISPATCHER_HPP
 
+#include "vardispatcher.hpp"
+
 namespace react {
 
     template <class T>
@@ -16,10 +18,10 @@ namespace react {
     public:
         static auto & instance();
 
-        void connect(const Rx<T, FN, TS ...> & rx,
+        void connect(Rx<T, FN, TS ...> & rx,
                      FN fn,
                      const Var<TS> & ... vars) {
-            // TODO implement this
+            react::connect(rx, vars ...);
         }
 
         void disconnect(const Rx<T, FN, TS ...> & rx) {
