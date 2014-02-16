@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef DISPATCHER_HPP
-#define DISPATCHER_HPP
+#ifndef RXDISPATCHER_HPP
+#define RXDISPATCHER_HPP
 
 namespace react {
 
@@ -11,14 +11,9 @@ namespace react {
     template <class T, class FN, class ... TS>
     class Rx;
 
-    class Dispatcher {
+    class RxDispatcher {
     public:
         static auto & instance();
-
-        template <class T>
-        void connect(const Var<T> & var) {
-            // TODO implement this
-        }
 
         template <class T, class FN, class ... TS>
         void connect(const Rx<T, FN, TS ...> & rx,
@@ -27,18 +22,8 @@ namespace react {
             // TODO implement this
         }
 
-        template <class T>
-        void disconnect(const Var<T> & var) {
-            // TODO implement this
-        }
-
         template <class T, class FN, class ... TS>
         void disconnect(const Rx<T, FN, TS ...> & rx) {
-            // TODO implement this
-        }
-
-        template <class T>
-        void notifyChange(const Var<T> & src) {
             // TODO implement this
         }
 
@@ -49,14 +34,14 @@ namespace react {
         }
 
     private:
-        Dispatcher() = default;
+        RxDispatcher() = default;
     };
 
-    auto & Dispatcher::instance() {
-        static Dispatcher dispatcher;
+    auto & RxDispatcher::instance() {
+        static RxDispatcher dispatcher;
         return dispatcher;
     }
 
 }
 
-#endif // DISPATCHER_HPP
+#endif // RXDISPATCHER_HPP

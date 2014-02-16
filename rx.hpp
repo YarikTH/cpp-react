@@ -6,27 +6,27 @@
 #include <utility>
 #include "var.hpp"
 #include "varlistener.hpp"
-#include "dispatcher.hpp"
+#include "rxdispatcher.hpp"
 
 namespace react {
 
     template <class T>
     class Var;
 
-    class Dispatcher;
+    class RxDispatcher;
 
     template <class T, class FN, class ... TS>
     class Rx : public Var<T>, public VarListener {
     public:
         Rx(FN fn, const Var<TS> & ... sources) {
-            Dispatcher::instance().connect(*this, fn, sources ...);
+            RxDispatcher::instance().connect(*this, fn, sources ...);
         }
         virtual ~Rx() {
-            Dispatcher::instance().disconnect(*this);
+            RxDispatcher::instance().disconnect(*this);
         }
 
         virtual void update() override {
-            Var<T>::operator=(Dispatcher::instance().compute(*this));
+            Var<T>::operator=(RxDispatcher::instance().compute(*this));
         }
 
     private:

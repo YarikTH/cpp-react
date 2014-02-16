@@ -4,7 +4,7 @@
 #define VAR_HPP
 
 #include <utility>
-#include "dispatcher.hpp"
+#include "vardispatcher.hpp"
 
 namespace react {
 
@@ -12,29 +12,29 @@ namespace react {
     class Var {
     public:
         Var() {
-            Dispatcher::instance().connect(*this);
+            VarDispatcher::instance().connect(*this);
         }
         Var(const T & newValue):
             value(newValue) {
-            Dispatcher::instance().connect(*this);
+            VarDispatcher::instance().connect(*this);
         }
         Var(T && newValue):
             // value(std::forward(newValue)) {
             value(std::move(newValue)) {
-            Dispatcher::instance().connect(*this);
+            VarDispatcher::instance().connect(*this);
         }
         ~Var() {
-            Dispatcher::instance().disconnect(*this);
+            VarDispatcher::instance().disconnect(*this);
         }
 
         auto & operator= (const T & newValue) {
             value = newValue;
-            Dispatcher::instance().notifyChange(*this);
+            VarDispatcher::instance().notifyChange(*this);
             return *this;
         }
         auto & operator= (T && newValue) {
             value = std::move(newValue);
-            Dispatcher::instance().notifyChange(*this);
+            VarDispatcher::instance().notifyChange(*this);
             return *this;
         }
 
