@@ -13,11 +13,14 @@ namespace react {
     template <class T>
     class Var;
 
+    template <class T, class FN, class ... TS>
     class RxDispatcher;
 
     template <class T, class FN, class ... TS>
     class Rx : public Var<T>, public VarListener {
     public:
+        using RxDispatcher = RxDispatcher<T, FN, TS ...>;
+
         Rx(FN fn, const Var<TS> & ... sources) {
             RxDispatcher::instance().connect(*this, fn, sources ...);
         }

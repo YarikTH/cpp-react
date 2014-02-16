@@ -8,21 +8,19 @@ namespace react {
     template <class T>
     class Var;
 
+    template <class T>
     class VarDispatcher {
     public:
         static auto & instance();
 
-        template <class T>
         void connect(const Var<T> & var) {
             // TODO implement this
         }
 
-        template <class T>
         void disconnect(const Var<T> & var) {
             // TODO implement this
         }
 
-        template <class T>
         void notifyChange(const Var<T> & var) {
             // TODO implement this
         }
@@ -31,7 +29,8 @@ namespace react {
         VarDispatcher() = default;
     };
 
-    auto & VarDispatcher::instance() {
+    template <class T>
+    auto & VarDispatcher<T>::instance() {
         static VarDispatcher dispatcher;
         return dispatcher;
     }

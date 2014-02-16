@@ -11,6 +11,8 @@ namespace react {
     template <class T>
     class Var {
     public:
+        using VarDispatcher = VarDispatcher<T>;
+
         Var() {
             VarDispatcher::instance().connect(*this);
         }

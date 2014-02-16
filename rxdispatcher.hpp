@@ -11,23 +11,21 @@ namespace react {
     template <class T, class FN, class ... TS>
     class Rx;
 
+    template <class T, class FN, class ... TS>
     class RxDispatcher {
     public:
         static auto & instance();
 
-        template <class T, class FN, class ... TS>
         void connect(const Rx<T, FN, TS ...> & rx,
                      FN fn,
                      const Var<TS> & ... vars) {
             // TODO implement this
         }
 
-        template <class T, class FN, class ... TS>
         void disconnect(const Rx<T, FN, TS ...> & rx) {
             // TODO implement this
         }
 
-        template <class T, class FN, class ... TS>
         T compute(const Rx<T, FN, TS ...> & rx) {
             // TODO implement this
             return T{};
@@ -37,7 +35,8 @@ namespace react {
         RxDispatcher() = default;
     };
 
-    auto & RxDispatcher::instance() {
+    template <class T, class FN, class ... TS>
+    auto & RxDispatcher<T, FN, TS ...>::instance() {
         static RxDispatcher dispatcher;
         return dispatcher;
     }
