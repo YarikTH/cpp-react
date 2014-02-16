@@ -26,7 +26,7 @@ namespace react {
         }
 
         template <class T>
-        void notifyChange(const Var<T> & src) {
+        void notifyChange(const Var<T> & var) {
             // TODO implement this
         }
 

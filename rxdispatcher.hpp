@@ -18,7 +18,7 @@ namespace react {
         template <class T, class FN, class ... TS>
         void connect(const Rx<T, FN, TS ...> & rx,
                      FN fn,
-                     const Var<TS> & ... sources) {
+                     const Var<TS> & ... vars) {
             // TODO implement this
         }
 
