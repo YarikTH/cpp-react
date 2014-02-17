@@ -43,7 +43,7 @@ namespace react {
             rxLinks.erase(&rx);
         }
 
-        T compute(const Rx & rx, FN fn) {
+        T compute(const Rx & rx, FN fn) const {
             return compute(rx, fn, AllIndices());
         }
 
@@ -51,12 +51,12 @@ namespace react {
         RxDispatcher() = default;
 
         template <unsigned int INDEX>
-        const auto & value(const Tuple & tp) {
+        const auto & value(const Tuple & tp) const {
             return react::value(Accessor<INDEX>::Get(tp));
         }
 
         template <unsigned int ... INDICES>
-        T compute(const Rx & rx, FN fn, const Indices<INDICES ...> &) {
+        T compute(const Rx & rx, FN fn, const Indices<INDICES ...> &) const {
             auto it = rxLinks.find(&rx);
 
             if (it != rxLinks.end()) {
