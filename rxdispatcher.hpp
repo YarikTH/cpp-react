@@ -21,13 +21,21 @@ namespace react {
         using Rx = Rx<T, FN, TS ...>;
         using RxLink = RxLink<T, FN, TS ...>;
         using RxLinks = std::unordered_map<const Rx *, RxLink>;
+        using Tuple = typename RxLink::Tuple;
+        using AllIndices = typename Tuple::AllIndices;
+        template <unsigned int ... INDICES>
+        using Indices = tuple::Indices<INDICES ...>;
+        template <unsigned int INDEX>
+        using Accessor = tuple::Accessor<INDEX, const Var<TS> * ...>;
 
-        static auto & instance();
+        static auto & instance() {
+            static RxDispatcher dispatcher;
+            return dispatcher;
+        }
 
         void connect(Rx & rx,
-                     FN fn,
                      const Var<TS> & ... vars) {
-            rxLinks[&rx] = RxLink(tuple::MakeTuple(&vars ...));
+            rxLinks[&rx] = RxLink(Tuple(&vars ...));
             react::connect(rx, vars ...);
         }
 
@@ -35,22 +43,32 @@ namespace react {
             rxLinks.erase(&rx);
         }
 
-        T compute(const Rx & rx) {
-            // TODO implement this
-            return T{};
+        T compute(const Rx & rx, FN fn) {
+            return compute(rx, fn, AllIndices());
         }
 
     private:
         RxDispatcher() = default;
 
+        template <unsigned int INDEX>
+        const auto & value(const Tuple & tp) {
+            return react::value(Accessor<INDEX>::Get(tp));
+        }
+
+        template <unsigned int ... INDICES>
+        T compute(const Rx & rx, FN fn, const Indices<INDICES ...> &) {
+            auto it = rxLinks.find(&rx);
+
+            if (it != rxLinks.end()) {
+                return fn(value<INDICES>(it->second.vars)...);
+            }
+            else {
+                return T{};
+            }
+        }
+
         RxLinks rxLinks;
     };
-
-    template <class T, class FN, class ... TS>
-    auto & RxDispatcher<T, FN, TS ...>::instance() {
-        static RxDispatcher dispatcher;
-        return dispatcher;
-    }
 
 }
 

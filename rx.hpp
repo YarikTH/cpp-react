@@ -21,19 +21,26 @@ namespace react {
     public:
         using RxDispatcher = RxDispatcher<T, FN, TS ...>;
 
-        Rx(FN fn, const Var<TS> & ... sources) {
-            RxDispatcher::instance().connect(*this, fn, sources ...);
+        auto & dispatcher() {
+            return RxDispatcher::instance();
+        }
+
+        Rx(FN newFn, const Var<TS> & ... sources):
+            fn(newFn) {
+            dispatcher().connect(*this, sources ...);
+            update();
         }
 
         virtual ~Rx() {
-            RxDispatcher::instance().disconnect(*this);
+            dispatcher().disconnect(*this);
         }
 
         virtual void update() override {
-            Var<T>::operator=(RxDispatcher::instance().compute(*this));
+            Var<T>::operator=(dispatcher().compute(*this, fn));
         }
 
     private:
+        FN fn;
     };
 
     template <class FN, class ... TS>

@@ -50,6 +50,19 @@ namespace react {
             }
         }
 
+        const T & value(const Var * var) {
+            auto it = varsListeners.find(var);
+
+            if (it != varsListeners.end()) {
+                return var->getValue();
+            }
+            else {
+                // TODO implement value caching for destroyed vars
+                static auto res = T{};
+                return res;
+            }
+        }
+
     private:
         VarDispatcher() = default;
 
@@ -71,6 +84,11 @@ namespace react {
                         const Var<TS> & ... vars) {
         VarDispatcher<T>::instance().connect(var, listener);
         connect(listener, vars ...);
+    }
+
+    template <class T>
+    inline const auto & value(const Var<T> * var) {
+        return VarDispatcher<T>::instance().value(var);
     }
 
 }
