@@ -16,19 +16,21 @@ namespace react {
     template <class T, class FN, class ... TS>
     class RxDispatcher {
     public:
+        using Rx = Rx<T, FN, TS ...>;
+
         static auto & instance();
 
-        void connect(Rx<T, FN, TS ...> & rx,
+        void connect(Rx & rx,
                      FN fn,
                      const Var<TS> & ... vars) {
             react::connect(rx, vars ...);
         }
 
-        void disconnect(const Rx<T, FN, TS ...> & rx) {
+        void disconnect(const Rx & rx) {
             // TODO implement this
         }
 
-        T compute(const Rx<T, FN, TS ...> & rx) {
+        T compute(const Rx & rx) {
             // TODO implement this
             return T{};
         }
