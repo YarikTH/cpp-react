@@ -19,6 +19,12 @@ namespace react {
         RxLink(Tuple && newVars):
             vars(std::move(newVars)) {
         }
+        RxLink(const Var<TS> * ... newVars):
+            vars(newVars ...){
+        }
+        RxLink(const Var<TS> & ... newVars):
+            vars(&newVars ...){
+        }
 
         Tuple vars;
 
