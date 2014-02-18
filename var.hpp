@@ -32,16 +32,9 @@ namespace react {
             VarDispatcherT::instance().disconnect(*this);
         }
 
-        // TODO unite this with next
-        auto & operator= (const T & newValue) {
-            value = newValue;
-            VarDispatcherT::instance().notifyChange(*this);
-            return *this;
-        }
-
-        // TODO and this with previous
-        auto & operator= (T && newValue) {
-            value = std::move(newValue);
+        template <class U>
+        auto & operator=(U && newValue) {
+            value = std::forward<U>(newValue);
             VarDispatcherT::instance().notifyChange(*this);
             return *this;
         }
