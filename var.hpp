@@ -59,13 +59,8 @@ namespace react {
     };
 
     template <class T>
-    inline auto makeVar(const T & value) {
-        return Var<T>(value);
-    }
-
-    template <class T>
     inline auto makeVar(T && value) {
-        return Var<T>(std::move(value));
+        return Var<T>(std::forward<T>(value));
     }
 
 } // namespace react
