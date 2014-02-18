@@ -1,5 +1,7 @@
 CPP_FLAGS= -std=c++1y -stdlib=libc++ -I.
 LINK_FLAGS= -lc++abi
+# TODO use CC
+CC=clang++
 
 all:
 	clang++ ${CPP_FLAGS} ${LINK_FLAGS} main.cpp
