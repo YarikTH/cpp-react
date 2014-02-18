@@ -33,8 +33,14 @@ namespace react {
             dispatcher().disconnect(*this);
         }
 
+        template <class U>
+        auto & operator=(U && newValue) {
+            Var<T>::operator=(std::forward<U>(newValue));
+            return *this;
+        }
+
         virtual void update() override {
-            Var<T>::operator=(dispatcher().compute(*this, fn));
+            *this = dispatcher().compute(*this, fn);
         }
 
     private:
