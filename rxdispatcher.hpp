@@ -18,10 +18,10 @@ namespace react {
     template <class T, class FN, class ... TS>
     class RxDispatcher {
     public:
-        using Rx = Rx<T, FN, TS ...>;
-        using RxLink = RxLink<T, FN, TS ...>;
-        using RxLinks = std::unordered_map<const Rx *, RxLink>;
-        using Tuple = typename RxLink::Tuple;
+        using RxT = Rx<T, FN, TS ...>;
+        using RxLinkT = RxLink<T, FN, TS ...>;
+        using RxLinks = std::unordered_map<const RxT *, RxLinkT>;
+        using Tuple = typename RxLinkT::Tuple;
         using AllIndices = typename Tuple::AllIndices;
         template <unsigned int ... INDICES>
         using Indices = tuple::Indices<INDICES ...>;
@@ -33,17 +33,17 @@ namespace react {
             return dispatcher;
         }
 
-        void connect(Rx & rx,
+        void connect(RxT & rx,
                      const Var<TS> & ... vars) {
-            rxLinks[&rx] = RxLink(Tuple(&vars ...));
+            rxLinks[&rx] = RxLinkT(Tuple(&vars ...));
             react::connect(rx, vars ...);
         }
 
-        void disconnect(const Rx & rx) {
+        void disconnect(const RxT & rx) {
             rxLinks.erase(&rx);
         }
 
-        T compute(const Rx & rx, FN fn) const {
+        T compute(const RxT & rx, FN fn) const {
             return compute(rx, fn, AllIndices());
         }
 
@@ -56,7 +56,7 @@ namespace react {
         }
 
         template <unsigned int ... INDICES>
-        T compute(const Rx & rx, FN fn, const Indices<INDICES ...> &) const {
+        T compute(const RxT & rx, FN fn, const Indices<INDICES ...> &) const {
             auto it = rxLinks.find(&rx);
 
             if (it != rxLinks.end()) {

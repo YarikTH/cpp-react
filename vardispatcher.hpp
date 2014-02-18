@@ -15,29 +15,29 @@ namespace react {
     template <class T>
     class VarDispatcher {
     public:
-        using Var = Var<T>;
+        using VarT = Var<T>;
         using Listeners = std::unordered_set<VarListener *>;
-        using VarsListeners = std::unordered_map<const Var *, Listeners>;
+        using VarsListeners = std::unordered_map<const VarT *, Listeners>;
 
         static auto & instance();
 
-        void connect(const Var & var) {
+        void connect(const VarT & var) {
             varsListeners[&var];
         }
 
-        void connect(const Var & var, VarListener & listener) {
+        void connect(const VarT & var, VarListener & listener) {
             varsListeners[&var].insert(&listener);
         }
 
-        void disconnect(const Var & var) {
+        void disconnect(const VarT & var) {
             varsListeners.erase(&var);
         }
 
-        void disconnect(const Var & var, VarListener & listener) {
+        void disconnect(const VarT & var, VarListener & listener) {
             varsListeners[&var].erase(&listener);
         }
 
-        void notifyChange(const Var & var) {
+        void notifyChange(const VarT & var) {
             auto listeners = varsListeners.find(&var);
 
             if (listeners != varsListeners.end()) {
@@ -50,7 +50,7 @@ namespace react {
             }
         }
 
-        const T & value(const Var * var) {
+        const T & value(const VarT * var) {
             auto it = varsListeners.find(var);
 
             if (it != varsListeners.end()) {

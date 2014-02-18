@@ -11,38 +11,38 @@ namespace react {
     template <class T>
     class Var {
     public:
-        using VarDispatcher = VarDispatcher<T>;
+        using VarDispatcherT = VarDispatcher<T>;
 
         Var() {
-            VarDispatcher::instance().connect(*this);
+            VarDispatcherT::instance().connect(*this);
         }
 
         Var(const T & newValue):
             value(newValue) {
-            VarDispatcher::instance().connect(*this);
+            VarDispatcherT::instance().connect(*this);
         }
 
         Var(T && newValue):
             // value(std::forward(newValue)) {
             value(std::move(newValue)) {
-            VarDispatcher::instance().connect(*this);
+            VarDispatcherT::instance().connect(*this);
         }
 
         ~Var() {
-            VarDispatcher::instance().disconnect(*this);
+            VarDispatcherT::instance().disconnect(*this);
         }
 
         // TODO unite this with next
         auto & operator= (const T & newValue) {
             value = newValue;
-            VarDispatcher::instance().notifyChange(*this);
+            VarDispatcherT::instance().notifyChange(*this);
             return *this;
         }
 
         // TODO and this with previous
         auto & operator= (T && newValue) {
             value = std::move(newValue);
-            VarDispatcher::instance().notifyChange(*this);
+            VarDispatcherT::instance().notifyChange(*this);
             return *this;
         }
 
