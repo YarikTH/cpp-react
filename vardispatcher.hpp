@@ -54,7 +54,7 @@ namespace react {
             auto it = varsListeners.find(var);
 
             if (it != varsListeners.end()) {
-                return var->getValue();
+                return (*var)();
             }
             else {
                 // TODO implement value caching for destroyed vars

@@ -21,9 +21,9 @@ int main() {
     cout << "id1 " << var1.getId() << endl;
     cout << "id2 " << var2.getId() << endl;
 
-    cout << var0 << ", " << var1 << ", " << var2 << endl;
+    cout << var0() << ", " << var1() << ", " << var2() << endl;
     var0 = 2;
-    cout << var0 << ", " << var1 << ", " << var2 << endl;
+    cout << var0() << ", " << var1() << ", " << var2() << endl;
 
     cout << "end testing" << endl;
 

@@ -39,11 +39,7 @@ namespace react {
             return *this;
         }
 
-        const auto & getValue() const {
-            return value;
-        }
-
-        operator const T & () {
+        const T & operator()() const {
             return value;
         }
 
