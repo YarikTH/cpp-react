@@ -19,10 +19,8 @@ namespace react {
     template <class T, class FN, class ... TS>
     class Rx : public Var<T>, public VarListener {
     public:
-        using RxDispatcherT = RxDispatcher<T, FN, TS ...>;
-
         auto & dispatcher() {
-            return RxDispatcherT::instance();
+            return RxDispatcher<T, FN, TS ...>::instance();
         }
 
         Rx(FN newFn, const Var<TS> & ... sources):
