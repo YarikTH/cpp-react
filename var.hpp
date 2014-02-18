@@ -32,12 +32,14 @@ namespace react {
             VarDispatcher::instance().disconnect(*this);
         }
 
+        // TODO unite this with next
         auto & operator= (const T & newValue) {
             value = newValue;
             VarDispatcher::instance().notifyChange(*this);
             return *this;
         }
 
+        // TODO and this with previous
         auto & operator= (T && newValue) {
             value = std::move(newValue);
             VarDispatcher::instance().notifyChange(*this);
