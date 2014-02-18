@@ -1,8 +1,8 @@
 CC1= clang++
-CC1_FLAGS= -std=c++1y -stdlib=libc++ -I.
+CC1_FLAGS= -std=c++1y -stdlib=libc++ -I. -o a1.out
 LL1_FLAGS= -lc++abi
 CC2= g++
-CC2_FLAGS= -std=c++1y -I.
+CC2_FLAGS= -std=c++1y -I. -o a2.out
 LL2_FLAGS= -lc++abi
 
 all:
