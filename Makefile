@@ -1,13 +1,15 @@
-CPP_FLAGS= -std=c++1y -stdlib=libc++ -I.
-LINK_FLAGS= -lc++abi
-# TODO use CC
-CC=clang++
+CC1= clang++
+CC1_FLAGS= -std=c++1y -stdlib=libc++ -I.
+LL1_FLAGS= -lc++abi
+CC2= g++
+CC2_FLAGS= -std=c++1y -I.
+LL2_FLAGS= -lc++abi
 
 all:
-	clang++ ${CPP_FLAGS} ${LINK_FLAGS} main.cpp
+	${CC1} ${CC1_FLAGS} ${LL1_FLAGS} main.cpp ; ${CC2} ${CC2_FLAGS} ${LL2_FLAGS} main.cpp
 
 check-syntax:
-	clang++ ${CPP_FLAGS} ${LINK_FLAGS} -fsyntax-only -fno-color-diagnostics ${CHK_SOURCES}
+	${CC1} ${CC1_FLAGS} ${LL1_FLAGS} -fsyntax-only -fno-color-diagnostics ${CHK_SOURCES}
 
 print-cflags:
-	echo ${CPP_FLAGS}
+	echo ${CC1_FLAGS}
