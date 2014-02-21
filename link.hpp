@@ -56,6 +56,16 @@ namespace react {
         Tuple vars;
     };
 
+    template <class T, class FN, class ... TS>
+    auto link(const Var<TS> * ... newVars) {
+        return Link<T, FN, TS ...>(newVars ...);
+    }
+
+    template <class T, class FN, class ... TS>
+    auto link(const Var<TS> & ... newVars) {
+        return Link<T, FN, TS ...>(newVars ...);
+    }
+
 }
 
 #endif // LINK_HPP
