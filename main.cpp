@@ -10,10 +10,10 @@ int main() {
     cout << "begin testing" << endl;
 
     auto var0 = var(4);
-    auto var1 = makeRx(var0, [] (auto a) {
+    auto var1 = rx(var0, [] (auto a) {
             return a * a;
         });
-    auto var2 = makeRx([] (auto a, auto b) {
+    auto var2 = rx([] (auto a, auto b) {
             return a + b;
         }, var0, var1);
 

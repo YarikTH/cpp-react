@@ -48,14 +48,14 @@ namespace react {
     };
 
     template <class FN, class ... TS>
-    inline auto makeRx(FN fn, const Var<TS> & ... sources) {
+    inline auto rx(FN fn, const Var<TS> & ... sources) {
         using T = decltype(fn(sources() ...));
         using Result = Rx<T, FN, TS ...>;
         return Result(fn, sources ...);
     }
 
     template <class FN, class TS>
-    inline auto makeRx(const Var<TS> & var, FN fn) {
+    inline auto rx(const Var<TS> & var, FN fn) {
         using T = decltype(fn(var()));
         using Result = Rx<T, FN, T>;
         return Result(fn, var);
