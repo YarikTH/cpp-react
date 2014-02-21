@@ -48,9 +48,12 @@ namespace react {
             return *this;
         }
 
-        Tuple vars;
+        const auto & getVars() const {
+            return vars;
+        }
 
     private:
+        Tuple vars;
     };
 
 }

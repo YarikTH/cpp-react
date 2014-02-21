@@ -60,7 +60,7 @@ namespace react {
             auto it = links.find(&rx);
 
             if (it != links.end()) {
-                return fn(value<INDICES>(it->second.vars)...);
+                return fn(value<INDICES>(it->second.getVars())...);
             }
             else {
                 return T{};
