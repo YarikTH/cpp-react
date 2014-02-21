@@ -6,7 +6,10 @@ CC2_FLAGS= -std=c++1y -I. -o a2.out
 LL2_FLAGS= -lc++abi
 
 all:
-	${CC1} ${CC1_FLAGS} ${LL1_FLAGS} main.cpp ; ${CC2} ${CC2_FLAGS} ${LL2_FLAGS} main.cpp
+	echo compile with ${CC1}
+	${CC1} ${CC1_FLAGS} ${LL1_FLAGS} main.cpp
+	echo compile with ${CC2}
+	${CC2} ${CC2_FLAGS} ${LL2_FLAGS} main.cpp
 
 check-syntax:
 	${CC1} ${CC1_FLAGS} ${LL1_FLAGS} -fsyntax-only -fno-color-diagnostics ${CHK_SOURCES}
