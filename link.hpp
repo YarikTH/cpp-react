@@ -1,28 +1,28 @@
 #pragma once
 
-#ifndef RXLINK_HPP
-#define RXLINK_HPP
+#ifndef LINK_HPP
+#define LINK_HPP
 
 #include <tuple/tuple.hpp>
 
 namespace react {
 
     template <class T, class FN, class ... TS>
-    class RxLink {
+    class Link {
     public:
         using Tuple = tuple::Tuple<const Var<TS> * ...>;
 
-        RxLink() = default;
-        RxLink(const Tuple & newVars):
+        Link() = default;
+        Link(const Tuple & newVars):
             vars(newVars) {
         }
-        RxLink(Tuple && newVars):
+        Link(Tuple && newVars):
             vars(std::move(newVars)) {
         }
-        RxLink(const Var<TS> * ... newVars):
+        Link(const Var<TS> * ... newVars):
             vars(newVars ...){
         }
-        RxLink(const Var<TS> & ... newVars):
+        Link(const Var<TS> & ... newVars):
             vars(&newVars ...){
         }
 
@@ -33,4 +33,4 @@ namespace react {
 
 }
 
-#endif // RXLINK_HPP
+#endif // LINK_HPP

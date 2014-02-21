@@ -4,7 +4,7 @@
 #define RXDISPATCHER_HPP
 
 #include "vardispatcher.hpp"
-#include "rxlink.hpp"
+#include "link.hpp"
 #include <unordered_map>
 
 namespace react {
@@ -19,9 +19,9 @@ namespace react {
     class RxDispatcher {
     public:
         using RxT = Rx<T, FN, TS ...>;
-        using RxLinkT = RxLink<T, FN, TS ...>;
-        using RxLinks = std::unordered_map<const RxT *, RxLinkT>;
-        using Tuple = typename RxLinkT::Tuple;
+        using LinkT = Link<T, FN, TS ...>;
+        using Links = std::unordered_map<const RxT *, LinkT>;
+        using Tuple = typename LinkT::Tuple;
         using AllIndices = typename Tuple::AllIndices;
         template <unsigned int ... INDICES>
         using Indices = tuple::Indices<INDICES ...>;
@@ -35,12 +35,12 @@ namespace react {
 
         void connect(RxT & rx,
                      const Var<TS> & ... vars) {
-            rxLinks[&rx] = RxLinkT(Tuple(&vars ...));
+            links[&rx] = LinkT(Tuple(&vars ...));
             react::connect(rx, vars ...);
         }
 
         void disconnect(const RxT & rx) {
-            rxLinks.erase(&rx);
+            links.erase(&rx);
         }
 
         T compute(const RxT & rx, FN fn) const {
@@ -57,9 +57,9 @@ namespace react {
 
         template <unsigned int ... INDICES>
         T compute(const RxT & rx, FN fn, const Indices<INDICES ...> &) const {
-            auto it = rxLinks.find(&rx);
+            auto it = links.find(&rx);
 
-            if (it != rxLinks.end()) {
+            if (it != links.end()) {
                 return fn(value<INDICES>(it->second.vars)...);
             }
             else {
@@ -67,7 +67,7 @@ namespace react {
             }
         }
 
-        RxLinks rxLinks;
+        Links links;
     };
 
 }
