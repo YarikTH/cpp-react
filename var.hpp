@@ -23,7 +23,6 @@ namespace react {
         }
 
         Var(T && newValue):
-            // value(std::forward(newValue)) {
             value(std::move(newValue)) {
             VarDispatcherT::instance().connect(*this);
         }
