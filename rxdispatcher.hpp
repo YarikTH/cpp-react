@@ -19,7 +19,7 @@ namespace react {
     class RxDispatcher {
     public:
         using RxT = Rx<T, FN, TS ...>;
-        using LinkT = Link<T, FN, TS ...>;
+        using LinkT = Link<TS ...>;
         using Links = std::unordered_map<const RxT *, LinkT>;
         using Tuple = typename LinkT::Tuple;
         using AllIndices = typename Tuple::AllIndices;

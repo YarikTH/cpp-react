@@ -7,7 +7,7 @@
 
 namespace react {
 
-    template <class T, class FN, class ... TS>
+    template <class ... TS>
     class Link {
     public:
         using Tuple = tuple::Tuple<const Var<TS> * ...>;
@@ -56,14 +56,14 @@ namespace react {
         Tuple vars;
     };
 
-    template <class T, class FN, class ... TS>
+    template <class ... TS>
     auto link(const Var<TS> * ... newVars) {
-        return Link<T, FN, TS ...>(newVars ...);
+        return Link<TS ...>(newVars ...);
     }
 
-    template <class T, class FN, class ... TS>
+    template <class ... TS>
     auto link(const Var<TS> & ... newVars) {
-        return Link<T, FN, TS ...>(newVars ...);
+        return Link<TS ...>(newVars ...);
     }
 
 }
