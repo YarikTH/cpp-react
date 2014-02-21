@@ -11,7 +11,7 @@ namespace react {
     template <class T>
     class Var {
     public:
-        auto & dispatcher() {
+        static auto & dispatcher() {
             return VarDispatcher<T>::instance();
         }
 
