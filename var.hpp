@@ -58,7 +58,7 @@ namespace react {
     };
 
     template <class T>
-    inline auto makeVar(T && value) {
+    inline auto var(T && value) {
         return Var<T>(std::forward<T>(value));
     }
 

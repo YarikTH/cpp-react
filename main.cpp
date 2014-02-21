@@ -9,7 +9,7 @@ using namespace react;
 int main() {
     cout << "begin testing" << endl;
 
-    auto var0 = makeVar(4);
+    auto var0 = var(4);
     auto var1 = makeRx(var0, [] (auto a) {
             return a * a;
         });
