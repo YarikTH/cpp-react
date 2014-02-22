@@ -5,6 +5,7 @@
 
 #include <utility>
 #include "vardispatcher.hpp"
+#include "rx.hpp"
 
 namespace react {
 
@@ -46,6 +47,12 @@ namespace react {
 
         auto getId() const {
             return id;
+        }
+
+        template <class FN>
+        auto rx(FN fn) const {
+            using RxType = Rx<decltype(fn(value)), FN, T>;
+            return RxType(fn, link(*this));
         }
 
     private:

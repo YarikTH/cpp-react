@@ -12,8 +12,25 @@ namespace react {
     template <class T>
     class Var;
 
+    template <class ... TS>
+    class Link;
+
     template <class T, class FN, class ... TS>
     class Rx;
+
+    template <class T, class ... TS>
+    void connect(VarListener & listener,
+                 const Var<T> & var,
+                 const Var<TS> & ... vars);
+
+    template <class T>
+    void connect(VarListener & listener, const Link<T> & link);
+
+    template <class T, class TT, class ... TS>
+    void connect(VarListener & listener, const Link<T, TT, TS ...> & link);
+
+    template <class T>
+    const auto & value(const Var<T> * var);
 
     template <class T, class FN, class ... TS>
     class RxDispatcher {
@@ -33,10 +50,9 @@ namespace react {
             return dispatcher;
         }
 
-        void connect(RxT & rx,
-                     const Var<TS> & ... vars) {
-            links[&rx] = LinkT(Tuple(&vars ...));
-            react::connect(rx, vars ...);
+        void connect(RxT & rx, const LinkT & link) {
+            links[&rx] = link;
+            react::connect(rx, link);
         }
 
         void disconnect(const RxT & rx) {

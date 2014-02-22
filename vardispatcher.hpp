@@ -6,6 +6,7 @@
 #include <unordered_set>
 #include <unordered_map>
 #include "varlistener.hpp"
+#include "link.hpp"
 
 namespace react {
 
@@ -19,7 +20,10 @@ namespace react {
         using Listeners = std::unordered_set<VarListener *>;
         using VarsListeners = std::unordered_map<const VarT *, Listeners>;
 
-        static auto & instance();
+        static auto & instance() {
+            static VarDispatcher dispatcher;
+            return dispatcher;
+        }
 
         void connect(const VarT & var) {
             varsListeners[&var];
@@ -34,7 +38,14 @@ namespace react {
         }
 
         void disconnect(const VarT & var, VarListener & listener) {
-            varsListeners[&var].erase(&listener);
+            auto listeners = varsListeners.find(&var);
+
+            if (listeners != varsListeners.end()) {
+                listeners->second.erase(&listener);
+            }
+            else {
+                // error, we are not owninng this var
+            }
         }
 
         void notifyChange(const VarT & var) {
@@ -70,20 +81,16 @@ namespace react {
     };
 
     template <class T>
-    auto & VarDispatcher<T>::instance() {
-        static VarDispatcher dispatcher;
-        return dispatcher;
-    }
-
-    inline void connect(VarListener &) {
-    }
-
-    template <class T, class ... TS>
-    inline void connect(VarListener & listener,
-                        const Var<T> & var,
-                        const Var<TS> & ... vars) {
+    inline void connect(VarListener & listener, const Link<T> & link) {
+        const auto & var = *link.getVars().GetFirst();
         VarDispatcher<T>::instance().connect(var, listener);
-        connect(listener, vars ...);
+    }
+
+    template <class T, class TT, class ... TS>
+    inline void connect(VarListener & listener, const Link<T, TT, TS ...> & link) {
+        const auto & var = *link.getVars().GetFirst();
+        VarDispatcher<T>::instance().connect(var, listener);
+        connect(listener, Link<TT, TS ...>(*link.getVars().Next()));
     }
 
     template <class T>

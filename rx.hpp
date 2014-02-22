@@ -13,6 +13,9 @@ namespace react {
     template <class T>
     class Var;
 
+    template <class ... TS>
+    class Link;
+
     template <class T, class FN, class ... TS>
     class RxDispatcher;
 
@@ -23,9 +26,9 @@ namespace react {
             return RxDispatcher<T, FN, TS ...>::instance();
         }
 
-        Rx(FN newFn, const Var<TS> & ... sources):
+        Rx(FN newFn, const Link<TS ...> & link):
             fn(newFn) {
-            dispatcher().connect(*this, sources ...);
+            dispatcher().connect(*this, link);
             update();
         }
 
@@ -46,20 +49,6 @@ namespace react {
     private:
         FN fn;
     };
-
-    template <class FN, class ... TS>
-    inline auto rx(FN fn, const Var<TS> & ... sources) {
-        using T = decltype(fn(sources() ...));
-        using Result = Rx<T, FN, TS ...>;
-        return Result(fn, sources ...);
-    }
-
-    template <class FN, class TS>
-    inline auto rx(const Var<TS> & var, FN fn) {
-        using T = decltype(fn(var()));
-        using Result = Rx<T, FN, T>;
-        return Result(fn, var);
-    }
 
 } // namespace react
 

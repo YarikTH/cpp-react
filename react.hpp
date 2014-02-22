@@ -3,10 +3,8 @@
 #ifndef REACT_HPP
 #define REACT_HPP
 
-// #include "var.hpp"
-// #include "varlistener.hpp"
-// #include "rx.hpp"
-// #include "dispatcher.hpp"
+#include "var.hpp"
+#include "rx.hpp"
 
 namespace react {
 

@@ -4,8 +4,12 @@
 #define LINK_HPP
 
 #include <tuple/tuple.hpp>
+#include "rx.hpp"
 
 namespace react {
+
+    template <class T, class FN, class ... TS>
+    class Rx;
 
     template <class ... TS>
     class Link {
@@ -48,7 +52,18 @@ namespace react {
             return vars;
         }
 
+        template <class FN>
+        auto rx(FN fn) {
+            using RxType = Rx<decltype(fn(ref<TS>() ...)), FN, TS ...>;
+            return RxType(fn, *this);
+        }
+
     private:
+        template <class T>
+        static auto & ref() {
+            return *static_cast<T *>(nullptr);
+        }
+
         Tuple vars;
     };
 
