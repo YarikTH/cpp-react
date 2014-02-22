@@ -23,6 +23,7 @@ int main() {
 
     auto test = [&] {
         cout << "var01: " << var01() << endl;
+        cout << "var02: " << var02() << endl;
         cout << "var1: " << var1() << endl;
         cout << "var2: " << var2() << endl;
         cout << "var3: " << var3() << endl;
