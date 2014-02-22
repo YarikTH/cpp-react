@@ -30,10 +30,6 @@ namespace react {
             vars(std::move(newVars)) {
         }
 
-        Link(const Var<TS> * ... newVars):
-            vars(newVars ...){
-        }
-
         Link(const Var<TS> & ... newVars):
             vars(&newVars ...){
         }
@@ -55,11 +51,6 @@ namespace react {
     private:
         Tuple vars;
     };
-
-    template <class ... TS>
-    auto link(const Var<TS> * ... newVars) {
-        return Link<TS ...>(newVars ...);
-    }
 
     template <class ... TS>
     auto link(const Var<TS> & ... newVars) {
