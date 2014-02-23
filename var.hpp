@@ -55,6 +55,12 @@ namespace react {
             return RxType(fn, link(*this));
         }
 
+        auto rx() const {
+            return rx([] (auto a) {
+                    return a;
+                });
+        }
+
     private:
         static auto genId() {
             // TODO: use real generation

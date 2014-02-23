@@ -20,6 +20,7 @@ int main() {
     auto var2 = var01 + var1;
     auto var3 = var1 + var2;
     auto var4 = var3 == var3;
+    auto var5 = var4.rx();
 
     auto test = [&] {
         cout << "var01: " << var01() << endl;
@@ -28,11 +29,13 @@ int main() {
         cout << "var2: " << var2() << endl;
         cout << "var3: " << var3() << endl;
         cout << "var4: " << var4() << endl;
+        cout << "var5: " << var5() << endl;
 
         TEST(var1() == var01() * var02());
         TEST(var2() == var01() + var1());
         TEST(var3() == var1() + var2());
         TEST(var4() == (var3() == var3()));
+        TEST(var5() == var4());
 
         cout << endl;
     };
