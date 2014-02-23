@@ -37,7 +37,13 @@ namespace react {
         }
 
         void disconnect(const VarT & v) {
-            varsListeners.erase(&v);
+            auto it = varsListeners.find(&v);
+
+            for (auto & l : it->second) {
+                destroyedVarsValues[l][&v] = v();
+            }
+
+            varsListeners.erase(it);
         }
 
         void disconnect(const VarT & v, VarListener & l) {
