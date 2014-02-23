@@ -72,21 +72,20 @@ int main() {
     }
 
     cout << "var freezing testing\n" << endl;
-    {
-        auto dynamic_allocated_var_initializer = 4;
-        cout << "allocating var01" << endl;
-        auto * var01 = new Var<int>(dynamic_allocated_var_initializer);
-        auto var1 = var01->rx();
-        cout << "dynamic allocated var01: " << (*var01)() << endl;
-        cout << "identity var1: " << var1() << endl;
-        cout << "deleting var01" << endl;
-        delete var01;
-        cout << "updating var1" << endl;
-        var1.update();
-        cout << "identity var1 after update and var01 delete: " << var1() << endl;
-        TEST(var1() == dynamic_allocated_var_initializer);
-        cout << endl;
-    }
+
+    auto dynamic_allocated_var_initializer = 4;
+    cout << "allocating var04" << endl;
+    auto * var04 = new Var<int>(dynamic_allocated_var_initializer);
+    auto var6 = var04->rx();
+    cout << "dynamic allocated var04: " << (*var04)() << endl;
+    cout << "identity var6: " << var6() << endl;
+    cout << "deleting var04" << endl;
+    delete var04;
+    cout << "updating var6" << endl;
+    var6.update();
+    cout << "identity var6 after update and var04 delete: " << var6() << endl;
+    TEST(var6() == dynamic_allocated_var_initializer);
+    cout << endl;
 
     cout << "end testing\n" << endl;
 
