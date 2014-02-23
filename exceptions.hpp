@@ -20,21 +20,21 @@ namespace react {
         }
     };
 
-    class VarNotConnected : public std::exception {
+    class VarNotConnected : public NotConnected {
     public:
         virtual const char * what() const throw() override {
             return "error: trying to work with unregistered Var\n";
         }
     };
 
-    class VarListenerNotConnected : public std::exception {
+    class VarListenerNotConnected : public NotConnected {
     public:
         virtual const char * what() const throw() override {
             return "error: trying to work with unregistered VarListener\n";
         }
     };
 
-    class RxNotConnected : public std::exception {
+    class RxNotConnected : public NotConnected {
     public:
         virtual const char * what() const throw() override {
             return "error: trying to work with unregistered Rx\n";
