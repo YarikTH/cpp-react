@@ -97,6 +97,15 @@ namespace react {
     }
 
     template <class U, class V>
+    void insert(U & set, const V & key) {
+        if (set.find(key) != set.end()) {
+            throw typename AlreadyConnectedType<V>::Type{};
+        }
+
+        set.insert(key);
+    }
+
+    template <class U, class V>
     void erase(U & map, const V & key) {
         if (map.find(key) == map.end()) {
             throw typename NotConnectedType<V>::Type{};
