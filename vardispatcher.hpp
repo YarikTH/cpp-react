@@ -35,9 +35,8 @@ namespace react {
             if (listeners != varsListeners.end()) {
                 listeners->second.insert(&listener);
             }
-            else {
-                // error, we are not owninng this var
-            }
+
+            // error, we are not owninng this var
         }
 
         void disconnect(const VarT & var) {
@@ -50,9 +49,8 @@ namespace react {
             if (listeners != varsListeners.end()) {
                 listeners->second.erase(&listener);
             }
-            else {
-                // error, we are not owninng this var
-            }
+
+            // error, we are not owninng this var
         }
 
         void notifyChange(const VarT & var) {
@@ -63,9 +61,8 @@ namespace react {
                     listener->update();
                 }
             }
-            else {
-                // error, we are not owninng this var
-            }
+
+            // error, we are not owninng this var
         }
 
         const T & value(const VarT * var) {
@@ -74,11 +71,10 @@ namespace react {
             if (it != varsListeners.end()) {
                 return (*var)();
             }
-            else {
-                // TODO implement value caching for destroyed vars
-                static auto res = T{};
-                return res;
-            }
+
+            // TODO implement value caching for destroyed vars
+            static auto res = T{};
+            return res;
         }
 
     private:
