@@ -41,6 +41,12 @@ namespace react {
         }
     };
 
+    class AlreadyConnected : public std::exception {
+        virtual const char * what() const throw() override {
+            return "error: trying to connect already connected thing\n";
+        }
+    };
+
     template <class T>
     class NotConnectedType {
     public:
@@ -65,14 +71,38 @@ namespace react {
         using Type = RxNotConnected;
     };
 
+    template <class T>
+    class AlreadyConnectedType {
+    public:
+        using Type = AlreadyConnected;
+    };
+
     template <class U, class V>
-    auto & query(U & map, const V * key) {
+    auto & query(U & map, const V & key) {
         try {
             return map.at(key);
         }
         catch (const std::out_of_range &) {
-            throw typename NotConnectedType<V>::Type();
+            throw typename NotConnectedType<V>::Type{};
         }
+    }
+
+    template <class U, class V, class W>
+    void set(U & map, const V & key, const W & value) {
+        if (map.find(key) != map.end()) {
+            throw typename AlreadyConnectedType<V>::Type{};
+        }
+
+        map[key] = value;
+    }
+
+    template <class U, class V>
+    void erase(U & map, const V & key) {
+        if (map.find(key) == map.end()) {
+            throw typename NotConnectedType<V>::Type{};
+        }
+
+        map.erase(key);
     }
 }
 
