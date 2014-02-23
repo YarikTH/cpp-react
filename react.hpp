@@ -5,7 +5,7 @@
 
 #include "var.hpp"
 #include "rx.hpp"
-#include "linear.hpp"
+#include "operators.hpp"
 
 namespace react {
 
