@@ -41,7 +41,13 @@ namespace react {
         }
 
         void disconnect(const VarT & var) {
-            varsListeners.erase(&var);
+            auto listeners = varsListeners.find(&var);
+
+            if (listeners != varsListeners.end()) {
+                varsListeners.erase(listeners);
+            }
+
+            // error, we are not owninng this var
         }
 
         void disconnect(const VarT & var, VarListener & listener) {
