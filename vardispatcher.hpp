@@ -49,13 +49,19 @@ namespace react {
         }
 
         const T & value(const VarT * v, const VarListener & l) {
-            auto it = varsListeners.find(v);
+            auto varsValues = destroyedVarsValues.find(&l);
 
-            if (it != varsListeners.end()) {
-                return (*it->first)();
+            if (varsValues != destroyedVarsValues.end()) {
+                auto val = varsValues->second.find(v);
+
+                if (val != varsValues->second.end()) {
+                    return val->second;
+                }
             }
 
-            return query(query(destroyedVarsValues, &l), v);
+            query(varsListeners, v);
+
+            return (*v)();
         }
 
     private:
