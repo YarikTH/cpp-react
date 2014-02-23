@@ -5,6 +5,7 @@
 
 #include "vardispatcher.hpp"
 #include "link.hpp"
+#include "exceptions.hpp"
 #include <unordered_map>
 
 namespace react {
@@ -46,7 +47,7 @@ namespace react {
         }
 
         void connect(RxT & rx, const LinkT & link) {
-            links[&rx] = link;
+            set(links, &rx, link);
             react::connect(rx, link);
         }
 
@@ -68,14 +69,8 @@ namespace react {
 
         template <unsigned int ... INDICES>
         T compute(const RxT & rx, FN fn, const Indices<INDICES ...> &) const {
-            auto it = links.find(&rx);
-
-            if (it != links.end()) {
-                return fn(value<INDICES>(rx, it->second.getVars())...);
-            }
-            else {
-                return T{};
-            }
+            auto & link = query(links, &rx);
+            return fn(value<INDICES>(rx, link.getVars()) ...);
         }
 
         Links links;
