@@ -19,6 +19,7 @@ namespace react {
         using VarT = Var<T>;
         using Listeners = std::unordered_set<VarListener *>;
         using VarsListeners = std::unordered_map<const VarT *, Listeners>;
+        using VarsValues = std::unordered_map<const VarT *, T>;
 
         static auto & instance() {
             static VarDispatcher dispatcher;
@@ -72,7 +73,16 @@ namespace react {
                 return (*var)();
             }
 
-            // TODO implement value caching for destroyed vars
+            it = destroyedVarsListeners.find(var);
+
+            if (it != destroyedVarsListeners.end()) {
+                auto valit = destroyedVarsValues.find(var);
+
+                if (valit != destroyedVarsValues.end()) {
+                    return valit->second;
+                }
+            }
+
             static auto res = T{};
             return res;
         }
@@ -81,6 +91,8 @@ namespace react {
         VarDispatcher() = default;
 
         VarsListeners varsListeners;
+        VarsValues destroyedVarsValues;
+        VarsListeners destroyedVarsListeners;
     };
 
     template <class T>
