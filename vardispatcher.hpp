@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include "varlistener.hpp"
 #include "link.hpp"
+#include "exceptions.hpp"
 
 namespace react {
 
@@ -27,72 +28,34 @@ namespace react {
             return dispatcher;
         }
 
-        void connect(const VarT & var) {
-            varsListeners[&var];
+        void connect(const VarT & v) {
+            varsListeners[&v];
         }
 
-        void connect(const VarT & var, VarListener & listener) {
-            auto listeners = varsListeners.find(&var);
-
-            if (listeners != varsListeners.end()) {
-                listeners->second.insert(&listener);
-            }
-
-            // error, we are not owninng this var
+        void connect(const VarT & v, VarListener & l) {
+            query(varsListeners, &v).insert(&l);
         }
 
-        void disconnect(const VarT & var) {
-            auto listeners = varsListeners.find(&var);
-
-            if (listeners != varsListeners.end()) {
-                varsListeners.erase(listeners);
-            }
-
-            // error, we are not owninng this var
+        void disconnect(const VarT & v) {
+            varsListeners.erase(&v);
         }
 
-        void disconnect(const VarT & var, VarListener & listener) {
-            auto listeners = varsListeners.find(&var);
-
-            if (listeners != varsListeners.end()) {
-                listeners->second.erase(&listener);
-            }
-
-            // error, we are not owninng this var
+        void disconnect(const VarT & v, VarListener & l) {
+            query(varsListeners, &v).erase(&l);
         }
 
-        void notifyChange(const VarT & var) {
-            auto listeners = varsListeners.find(&var);
-
-            if (listeners != varsListeners.end()) {
-                for (auto & listener : listeners->second) {
-                    listener->update();
-                }
-            }
-
-            // error, we are not owninng this var
+        void notifyChange(const VarT & v) {
+            for (auto & l : query(varsListeners, &v)) l->update();
         }
 
-        const T & value(const VarT * var, const VarListener & listener) {
-            auto it = varsListeners.find(var);
+        const T & value(const VarT * v, const VarListener & l) {
+            auto it = varsListeners.find(v);
 
             if (it != varsListeners.end()) {
                 return (*it->first)();
             }
 
-            auto varsValues = destroyedVarsValues.find(&listener);
-
-            if (varsValues != destroyedVarsValues.end()) {
-                auto varValue = varsValues->second.find(var);
-
-                if (varValue != varsValues->second.end()) {
-                    return varValue->second;
-                }
-            }
-
-            // error
-            static auto res = T{};
-            return res;
+            return query(query(destroyedVarsValues, &l), v);
         }
 
     private:
