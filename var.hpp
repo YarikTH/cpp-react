@@ -45,10 +45,6 @@ namespace react {
             return value;
         }
 
-        auto getId() const {
-            return id;
-        }
-
         template <class FN>
         auto rx(FN fn) const {
             using RxType = Rx<decltype(fn(value)), FN, T>;
@@ -62,14 +58,7 @@ namespace react {
         }
 
     private:
-        static auto genId() {
-            // TODO: use real generation
-            static auto idPending = 0;
-            return idPending++;
-        }
-
         T value = T{};
-        int id = genId();
     };
 
     template <class T>
