@@ -55,17 +55,12 @@ namespace react {
         }
 
         const T & value(const VarT * v, const VarListener & l) {
-            auto varsValues = destroyedVarsValues.find(&l);
-
-            if (varsValues != destroyedVarsValues.end()) {
-                auto val = varsValues->second.find(v);
-
-                if (val != varsValues->second.end()) {
-                    return val->second;
-                }
+            try {
+                return query(query(destroyedVarsValues, &l), v);
             }
-
-            query(varsListeners, v);
+            catch (const NotConnected &) {
+                query(varsListeners, v);
+            }
 
             return (*v)();
         }
