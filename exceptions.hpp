@@ -47,10 +47,49 @@ namespace react {
         }
     };
 
+    class VarAlreadyConnected : public AlreadyConnected {
+    public:
+        virtual const char * what() const throw() override {
+            return "error: trying to connect already connected Var\n";
+        }
+    };
+
+    class VarListenerAlreadyConnected : public AlreadyConnected {
+    public:
+        virtual const char * what() const throw() override {
+            return "error: trying to connect already connected VarListener\n";
+        }
+    };
+
+    class RxAlreadyConnected : public AlreadyConnected {
+    public:
+        virtual const char * what() const throw() override {
+            return "error: trying to connect already connected Rx\n";
+        }
+    };
+
     template <class T>
     class NotConnectedType {
     public:
         using Type = NotConnected;
+    };
+
+    template <>
+    class NotConnectedType<VarListener *> {
+    public:
+        using Type = VarListenerNotConnected;
+    };
+
+    template <class T>
+    class NotConnectedType<Var<T> *> {
+    public:
+        using Type = VarNotConnected;
+    };
+
+    template <class T, class FN, class ... TS>
+    class NotConnectedType<Rx<T, FN, TS ...> *> {
+    public:
+        using Type = RxNotConnected;
     };
 
     template <>
@@ -75,6 +114,42 @@ namespace react {
     class AlreadyConnectedType {
     public:
         using Type = AlreadyConnected;
+    };
+
+    template <>
+    class AlreadyConnectedType<VarListener *> {
+    public:
+        using Type = VarListenerAlreadyConnected;
+    };
+
+    template <class T>
+    class AlreadyConnectedType<Var<T> *> {
+    public:
+        using Type = VarAlreadyConnected;
+    };
+
+    template <class T, class FN, class ... TS>
+    class AlreadyConnectedType<Rx<T, FN, TS ...> *> {
+    public:
+        using Type = RxAlreadyConnected;
+    };
+
+    template <>
+    class AlreadyConnectedType<VarListener> {
+    public:
+        using Type = VarListenerAlreadyConnected;
+    };
+
+    template <class T>
+    class AlreadyConnectedType<Var<T>> {
+    public:
+        using Type = VarAlreadyConnected;
+    };
+
+    template <class T, class FN, class ... TS>
+    class AlreadyConnectedType<Rx<T, FN, TS ...>> {
+    public:
+        using Type = RxAlreadyConnected;
     };
 
     template <class U, class V>
