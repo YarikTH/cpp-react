@@ -8,7 +8,7 @@ using namespace std;
 using namespace react;
 
 #define TEST(x) test::Log::log(#x, (x) ? 0 : 1);
-#define TEST_PASSES 10
+#define TEST_PASSES 3
 #define TEST_RAND_LIMIT 10
 
 int main() {
@@ -69,6 +69,20 @@ int main() {
         }
 
         test();
+    }
+
+    cout << "var freezing testing\n" << endl;
+    {
+        auto dynamic_allocated_var_initializer = 4;
+        auto * var01 = new Var<int>(dynamic_allocated_var_initializer);
+        auto var1 = var01->rx();
+        cout << "dynamic allocated var01: " << (*var01)() << endl;
+        cout << "identity var1: " << var1() << endl;
+        delete var01;
+        var1.update();
+        cout << "identity var1 after update and var01 delete: " << var1() << endl;
+        TEST(var1() == dynamic_allocated_var_initializer);
+        cout << endl;
     }
 
     cout << "end testing\n" << endl;
