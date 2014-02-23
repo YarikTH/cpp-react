@@ -29,15 +29,23 @@ namespace react {
         }
 
         void connect(const VarT & v) {
-            varsListeners[&v];
+            set(varsListeners, &v, Listeners{});
         }
 
-        void connect(const VarT & v, VarListener & l) {
-            query(varsListeners, &v).insert(&l);
+        void connect(const VarT * v, VarListener & l) {
+            try {
+                insert(query(varsListeners, v), &l);
+            }
+            catch (const AlreadyConnected &) {
+            }
         }
 
         void disconnect(const VarT & v) {
             auto it = varsListeners.find(&v);
+
+            if (it == varsListeners.end()) {
+                throw typename NotConnectedType<VarT>::Type{};
+            }
 
             for (auto & l : it->second) {
                 destroyedVarsValues[l][&v] = v();
@@ -46,8 +54,37 @@ namespace react {
             varsListeners.erase(it);
         }
 
-        void disconnect(const VarT & v, VarListener & l) {
-            query(varsListeners, &v).erase(&l);
+        void disconnect(const VarT * v, VarListener & l) {
+            auto varnotfound = true;
+            auto it1 = destroyedVarsValues.find(&l);
+
+            if (it1 != destroyedVarsValues.end()) {
+                auto it2 = it1->second.find(v);
+
+                if (it2 != it1->second.end()) {
+                    varnotfound = false;
+                    it1->second.erase(it2);
+                }
+
+                if (it1->second.size() == 0) {
+                    destroyedVarsValues.erase(it1);
+                }
+            }
+
+            auto it3 = varsListeners.find(v);
+
+            if (it3 != varsListeners.end()) {
+                varnotfound = false;
+                auto it4 = it3->second.find(&l);
+
+                if (it4 != it3->second.end()) {
+                    it3->second.erase(it4);
+                }
+            }
+
+            if (varnotfound) {
+                throw typename NotConnectedType<VarT>::Type{};
+            }
         }
 
         void notifyChange(const VarT & v) {
@@ -74,15 +111,28 @@ namespace react {
 
     template <class T>
     inline void connect(VarListener & listener, const Link<T> & link) {
-        const auto & var = *link.getVars().GetFirst();
+        const auto & var = link.getVars().GetFirst();
         VarDispatcher<T>::instance().connect(var, listener);
     }
 
     template <class T, class TT, class ... TS>
     inline void connect(VarListener & listener, const Link<T, TT, TS ...> & link) {
-        const auto & var = *link.getVars().GetFirst();
+        const auto & var = link.getVars().GetFirst();
         VarDispatcher<T>::instance().connect(var, listener);
         connect(listener, Link<TT, TS ...>(*link.getVars().Next()));
+    }
+
+    template <class T>
+    inline void disconnect(VarListener & listener, const Link<T> & link) {
+        const auto & var = link.getVars().GetFirst();
+        VarDispatcher<T>::instance().disconnect(var, listener);
+    }
+
+    template <class T, class TT, class ... TS>
+    inline void disconnect(VarListener & listener, const Link<T, TT, TS ...> & link) {
+        const auto & var = link.getVars().GetFirst();
+        VarDispatcher<T>::instance().disconnect(var, listener);
+        disconnect(listener, Link<TT, TS ...>(*link.getVars().Next()));
     }
 
     template <class T>

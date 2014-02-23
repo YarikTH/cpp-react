@@ -26,6 +26,12 @@ namespace react {
     void connect(VarListener &, const Link<T, TT, TS ...> &);
 
     template <class T>
+    void disconnect(VarListener &, const Link<T> &);
+
+    template <class T, class TT, class ... TS>
+    void disconnect(VarListener &, const Link<T, TT, TS ...> &);
+
+    template <class T>
     const auto & value(const Var<T> *, const VarListener &);
 
     template <class T, class FN, class ... TS>
@@ -51,8 +57,9 @@ namespace react {
             react::connect(rx, link);
         }
 
-        void disconnect(const RxT & rx) {
-            links.erase(&rx);
+        void disconnect(RxT & rx) {
+            react::disconnect(rx, query(links, &rx));
+            erase(links, &rx);
         }
 
         T compute(const RxT & rx, FN fn) const {
