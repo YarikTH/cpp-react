@@ -30,7 +30,14 @@ namespace react {
         }
 
         void connect(const VarT & var, VarListener & listener) {
-            varsListeners[&var].insert(&listener);
+            auto listeners = varsListeners.find(&var);
+
+            if (listeners != varsListeners.end()) {
+                listeners->second.insert(&listener);
+            }
+            else {
+                // error, we are not owninng this var
+            }
         }
 
         void disconnect(const VarT & var) {
