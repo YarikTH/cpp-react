@@ -87,6 +87,11 @@ int main() {
     TEST(var6() == dynamic_allocated_var_initializer);
     cout << endl;
 
+    cout << "rx reincornation testing\n" << endl;
+
+    // TODO
+    cout << "currently not implemented\n" << endl;
+
     cout << "end testing\n" << endl;
 
     test::Log::stats();
