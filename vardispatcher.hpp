@@ -20,6 +20,7 @@ namespace react {
         using Listeners = std::unordered_set<VarListener *>;
         using VarsListeners = std::unordered_map<const VarT *, Listeners>;
         using VarsValues = std::unordered_map<const VarT *, T>;
+        using ListenersVarsValues = std::unordered_map<const VarListener *, VarsValues>;
 
         static auto & instance() {
             static VarDispatcher dispatcher;
@@ -72,23 +73,24 @@ namespace react {
             // error, we are not owninng this var
         }
 
-        const T & value(const VarT * var) {
+        const T & value(const VarT * var, const VarListener & listener) {
             auto it = varsListeners.find(var);
 
             if (it != varsListeners.end()) {
-                return (*var)();
+                return (*it->first)();
             }
 
-            it = destroyedVarsListeners.find(var);
+            auto varsValues = destroyedVarsValues.find(&listener);
 
-            if (it != destroyedVarsListeners.end()) {
-                auto valit = destroyedVarsValues.find(var);
+            if (varsValues != destroyedVarsValues.end()) {
+                auto varValue = varsValues->second.find(var);
 
-                if (valit != destroyedVarsValues.end()) {
-                    return valit->second;
+                if (varValue != varsValues->second.end()) {
+                    return varValue->second;
                 }
             }
 
+            // error
             static auto res = T{};
             return res;
         }
@@ -97,8 +99,7 @@ namespace react {
         VarDispatcher() = default;
 
         VarsListeners varsListeners;
-        VarsValues destroyedVarsValues;
-        VarsListeners destroyedVarsListeners;
+        ListenersVarsValues destroyedVarsValues;
     };
 
     template <class T>
@@ -115,8 +116,8 @@ namespace react {
     }
 
     template <class T>
-    inline const auto & value(const Var<T> * var) {
-        return VarDispatcher<T>::instance().value(var);
+    inline const auto & value(const Var<T> * var, const VarListener & l) {
+        return VarDispatcher<T>::instance().value(var, l);
     }
 
 }

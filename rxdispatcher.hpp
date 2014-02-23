@@ -18,19 +18,14 @@ namespace react {
     template <class T, class FN, class ... TS>
     class Rx;
 
-    template <class T, class ... TS>
-    void connect(VarListener & listener,
-                 const Var<T> & var,
-                 const Var<TS> & ... vars);
-
     template <class T>
-    void connect(VarListener & listener, const Link<T> & link);
+    void connect(VarListener &, const Link<T> &);
 
     template <class T, class TT, class ... TS>
-    void connect(VarListener & listener, const Link<T, TT, TS ...> & link);
+    void connect(VarListener &, const Link<T, TT, TS ...> &);
 
     template <class T>
-    const auto & value(const Var<T> * var);
+    const auto & value(const Var<T> *, const VarListener &);
 
     template <class T, class FN, class ... TS>
     class RxDispatcher {
@@ -67,8 +62,8 @@ namespace react {
         RxDispatcher() = default;
 
         template <unsigned int INDEX>
-        const auto & value(const Tuple & tp) const {
-            return react::value(Accessor<INDEX>::Get(tp));
+        const auto & value(const RxT & rx, const Tuple & tp) const {
+            return react::value(Accessor<INDEX>::Get(tp), rx);
         }
 
         template <unsigned int ... INDICES>
@@ -76,7 +71,7 @@ namespace react {
             auto it = links.find(&rx);
 
             if (it != links.end()) {
-                return fn(value<INDICES>(it->second.getVars())...);
+                return fn(value<INDICES>(rx, it->second.getVars())...);
             }
             else {
                 return T{};
