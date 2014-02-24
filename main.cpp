@@ -81,6 +81,8 @@ int main() {
     cout << "identity var6: " << var6() << endl;
     cout << "deleting var04" << endl;
     delete var04;
+    cout << "incrementing var6" << endl;
+    var6 = var6() + 1;
     cout << "updating var6" << endl;
     var6.update();
     cout << "identity var6 after update and var04 delete: " << var6() << endl;
