@@ -109,37 +109,6 @@ namespace react {
         ListenersVarsValues destroyedVarsValues;
     };
 
-    template <class T>
-    inline void connect(VarListener & listener, const Link<T> & link) {
-        const auto & var = link.getVars().GetFirst();
-        VarDispatcher<T>::instance().connect(var, listener);
-    }
-
-    template <class T, class TT, class ... TS>
-    inline void connect(VarListener & listener, const Link<T, TT, TS ...> & link) {
-        const auto & var = link.getVars().GetFirst();
-        VarDispatcher<T>::instance().connect(var, listener);
-        connect(listener, Link<TT, TS ...>(*link.getVars().Next()));
-    }
-
-    template <class T>
-    inline void disconnect(VarListener & listener, const Link<T> & link) {
-        const auto & var = link.getVars().GetFirst();
-        VarDispatcher<T>::instance().disconnect(var, listener);
-    }
-
-    template <class T, class TT, class ... TS>
-    inline void disconnect(VarListener & listener, const Link<T, TT, TS ...> & link) {
-        const auto & var = link.getVars().GetFirst();
-        VarDispatcher<T>::instance().disconnect(var, listener);
-        disconnect(listener, Link<TT, TS ...>(*link.getVars().Next()));
-    }
-
-    template <class T>
-    inline const auto & value(const Var<T> * var, const VarListener & l) {
-        return VarDispatcher<T>::instance().value(var, l);
-    }
-
 }
 
 #endif // VARDISPATCHER_HPP

@@ -20,19 +20,7 @@ namespace react {
     class Rx;
 
     template <class T>
-    void connect(VarListener &, const Link<T> &);
-
-    template <class T, class TT, class ... TS>
-    void connect(VarListener &, const Link<T, TT, TS ...> &);
-
-    template <class T>
-    void disconnect(VarListener &, const Link<T> &);
-
-    template <class T, class TT, class ... TS>
-    void disconnect(VarListener &, const Link<T, TT, TS ...> &);
-
-    template <class T>
-    const auto & value(const Var<T> *, const VarListener &);
+    class VarDispatcher;
 
     template <class T, class FN, class ... TS>
     class RxDispatcher {
@@ -54,11 +42,11 @@ namespace react {
 
         void connect(RxT & rx, const LinkT & link) {
             set(links, &rx, link);
-            react::connect(rx, link);
+            connectListener(rx, link);
         }
 
         void disconnect(RxT & rx) {
-            react::disconnect(rx, query(links, &rx));
+            disconnectListener(rx, query(links, &rx));
             erase(links, &rx);
         }
 
@@ -69,15 +57,46 @@ namespace react {
     private:
         RxDispatcher() = default;
 
+        template <class U>
+        const auto & value(const RxT & rx, const Var<U> * v) const {
+            return VarDispatcher<U>::instance().value(v, rx);
+        }
+
         template <unsigned int INDEX>
-        const auto & value(const RxT & rx, const Tuple & tp) const {
-            return react::value(Accessor<INDEX>::Get(tp), rx);
+        const auto & var(const RxT & rx, const LinkT & l) const {
+            return Accessor<INDEX>::Get(l.getVars());
         }
 
         template <unsigned int ... INDICES>
         T compute(const RxT & rx, FN fn, const Indices<INDICES ...> &) const {
-            auto & link = query(links, &rx);
-            return fn(value<INDICES>(rx, link.getVars()) ...);
+            auto & l = query(links, &rx);
+            return fn(value(rx, var<INDICES>(rx, l)) ...);
+        }
+
+        template <class U>
+        void connectListener(RxT & rx, const Link<U> & l) {
+            const auto & var = l.getVars().GetFirst();
+            VarDispatcher<U>::instance().connect(var, rx);
+        }
+
+        template <class U, class UU, class ... US>
+        void connectListener(RxT & rx, const Link<U, UU, US ...> & l) {
+            const auto & var = l.getVars().GetFirst();
+            VarDispatcher<U>::instance().connect(var, rx);
+            connectListener(rx, Link<UU, US ...>(*l.getVars().Next()));
+        }
+
+        template <class U>
+        void disconnectListener(RxT & rx, const Link<U> & l) {
+            const auto & var = l.getVars().GetFirst();
+            VarDispatcher<U>::instance().disconnect(var, rx);
+        }
+
+        template <class U, class UU, class ... US>
+        void disconnectListener(RxT & rx, const Link<U, UU, US ...> & l) {
+            const auto & var = l.getVars().GetFirst();
+            VarDispatcher<U>::instance().disconnect(var, rx);
+            disconnectListener(rx, Link<UU, US ...>(*l.getVars().Next()));
         }
 
         Links links;
