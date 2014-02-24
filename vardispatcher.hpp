@@ -36,7 +36,7 @@ namespace react {
             try {
                 insert(query(varsListeners, v), &l);
             }
-            catch (const AlreadyConnected &) {
+            catch (const VarListenerAlreadyConnected &) {
             }
         }
 
