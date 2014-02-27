@@ -26,10 +26,18 @@ namespace react {
             return RxDispatcher<T, FN, TS ...>::instance();
         }
 
+        Rx() = delete;
+        Rx(const Rx &) = delete;
+
+        Rx(Rx && newRx):
+            fn(std::move(newRx.fn)){
+            // TODO implement reincornation
+        }
+
         Rx(FN newFn, const Link<TS ...> & link):
             fn(newFn) {
             dispatcher().connect(*this, link);
-            update();
+            updateValue();
         }
 
         virtual ~Rx() {
@@ -42,8 +50,12 @@ namespace react {
             return *this;
         }
 
-        virtual void update() override {
+        virtual void updateValue() override {
             *this = dispatcher().compute(*this, fn);
+        }
+
+        virtual void updateLink() override {
+            dispatcher().updateLink(*this);
         }
 
     private:

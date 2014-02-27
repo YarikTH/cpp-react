@@ -84,15 +84,43 @@ int main() {
     cout << "incrementing var6" << endl;
     var6 = var6() + 1;
     cout << "updating var6" << endl;
-    var6.update();
+    var6.updateValue();
     cout << "identity var6 after update and var04 delete: " << var6() << endl;
     TEST(var6() == dynamic_allocated_var_initializer);
+    cout << endl;
+
+    cout << "var reincornation testing\n" << endl;
+
+    Var<int> * var05 = nullptr;
+    Rx<int, std::function<int(int)>, int> * var7 = nullptr;
+
+    var05 = new Var<int>(std::move([&] {
+                cout << "creating tmp var in lambda's scope" << endl;
+                auto tmp = var(7);
+                cout << "tmp value: " << tmp() << endl;
+                cout << "allocating var7 rx as tmp identity" << endl;
+                var7 = new Rx<int, std::function<int(int)>, int>([] (auto a) {
+                        return a;
+                    }, link(tmp));
+                cout << "var7 value: " << (*var7)() << endl;
+                return tmp;
+            })());
+
+    cout << "return lambdas's tmp by value" << endl;
+    cout << "explicitly pass lambda's result to move contructor of var05" << endl;
+    cout << "var05 value: " << (*var05)() << endl;
+    cout << "var7 value: " << (*var7)() << endl;
+    *var05 = 8;
+    cout << "update var05 value: " << (*var05)() << endl;
+    cout << "var7 value: " << (*var7)() << endl;
+    TEST((*var05)() == (*var7)());
     cout << endl;
 
     cout << "rx reincornation testing\n" << endl;
 
     // TODO
     cout << "currently not implemented\n" << endl;
+
 
     cout << "end testing\n" << endl;
 

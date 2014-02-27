@@ -51,11 +51,17 @@ namespace react {
         }
 
         T compute(const RxT & rx, FN fn) const {
-            return compute(rx, fn, AllIndices());
+            return compute(rx, fn, AllIndices{});
+        }
+
+        void updateLink(RxT & rx) {
+            updateLink(rx, AllIndices{});
         }
 
     private:
         RxDispatcher() = default;
+
+        // computing
 
         template <class U>
         const auto & value(const RxT & rx, const Var<U> * v) const {
@@ -73,6 +79,21 @@ namespace react {
             return fn(value(rx, var<INDICES>(rx, l)) ...);
         }
 
+        // link updating
+
+        template <class U>
+        const Var<U> & reincornated(const Var<U> * v, RxT & rx) {
+            return VarDispatcher<U>::instance().reincornated(v, rx);
+        }
+
+        template <unsigned int ... INDICES>
+        void updateLink(RxT & rx, const Indices<INDICES ...> &) {
+            auto & l = query(links, &rx);
+            l = link(reincornated(var<INDICES>(rx, l), rx) ...);
+        }
+
+        // connecting
+
         template <class U>
         void connectListener(RxT & rx, const Link<U> & l) {
             const auto & var = l.getVars().GetFirst();
@@ -85,6 +106,8 @@ namespace react {
             VarDispatcher<U>::instance().connect(var, rx);
             connectListener(rx, Link<UU, US ...>(*l.getVars().Next()));
         }
+
+        // diconnecting
 
         template <class U>
         void disconnectListener(RxT & rx, const Link<U> & l) {

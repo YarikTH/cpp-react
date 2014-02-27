@@ -18,8 +18,14 @@ namespace react {
     class VarDispatcher {
     public:
         using VarT = Var<T>;
+
         using Listeners = std::unordered_set<VarListener *>;
+        using Vars = std::unordered_set<const VarT *>;
+        using VarsVars = std::unordered_map<const VarT *, const VarT *>;
+
         using VarsListeners = std::unordered_map<const VarT *, Listeners>;
+        using ListenersVarsVars = std::unordered_map<VarListener *, VarsVars>;
+
         using VarsValues = std::unordered_map<const VarT *, T>;
         using ListenersVarsValues = std::unordered_map<const VarListener *, VarsValues>;
 
@@ -38,6 +44,36 @@ namespace react {
             }
             catch (const VarListenerAlreadyConnected &) {
             }
+        }
+
+        void reincornate(const VarT & from, const VarT & to) {
+            auto ifrom = varsListeners.find(&from);
+            auto ito = varsListeners.find(&from);
+
+            if (ifrom == varsListeners.end() ||
+                ito == varsListeners.end()) {
+                throw typename NotConnectedType<VarT>::Type{};
+            }
+
+            ito->second = ifrom->second;
+            ifrom->second.clear();
+
+            for (auto & l : ito->second) {
+                reincornatedListenersVars[l][&from] = &to;
+                l->updateLink();
+                reincornatedListenersVars.erase(l);
+            }
+        }
+
+        const VarT & reincornated(const VarT * v, VarListener & l) {
+            try {
+                return *query(query(reincornatedListenersVars, &l), v);
+            }
+            catch (const NotConnected &) {
+                query(varsListeners, v);
+            }
+
+            return *v;
         }
 
         void disconnect(const VarT & v) {
@@ -88,7 +124,7 @@ namespace react {
         }
 
         void notifyChange(const VarT & v) {
-            for (auto & l : query(varsListeners, &v)) l->update();
+            for (auto & l : query(varsListeners, &v)) l->updateValue();
         }
 
         const T & value(const VarT * v, const VarListener & l) {
@@ -107,6 +143,7 @@ namespace react {
 
         VarsListeners varsListeners;
         ListenersVarsValues destroyedVarsValues;
+        ListenersVarsVars reincornatedListenersVars;
     };
 
 }

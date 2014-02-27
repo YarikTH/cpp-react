@@ -7,7 +7,8 @@ namespace react {
 
     class VarListener {
     public:
-        virtual void update() = 0;
+        virtual void updateValue() = 0;
+        virtual void updateLink() = 0;
 
     private:
     };

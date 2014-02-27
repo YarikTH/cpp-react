@@ -20,6 +20,13 @@ namespace react {
             dispatcher().connect(*this);
         }
 
+        Var(const Var &) = delete;
+
+        Var(Var && newVar):
+            Var(std::move(newVar.value)) {
+            dispatcher().reincornate(newVar, *this);
+        }
+
         Var(const T & newValue):
             value(newValue) {
             dispatcher().connect(*this);
