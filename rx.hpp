@@ -31,7 +31,7 @@ namespace react {
 
         Rx(Rx && newRx):
             fn(std::move(newRx.fn)){
-            // TODO implement reincornation
+            // TODO implement reincarnation
         }
 
         Rx(FN newFn, const Link<TS ...> & link):

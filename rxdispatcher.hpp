@@ -82,14 +82,14 @@ namespace react {
         // link updating
 
         template <class U>
-        const Var<U> & reincornated(const Var<U> * v, RxT & rx) {
-            return VarDispatcher<U>::instance().reincornated(v, rx);
+        const Var<U> & reincarnated(const Var<U> * v, RxT & rx) {
+            return VarDispatcher<U>::instance().reincarnated(v, rx);
         }
 
         template <unsigned int ... INDICES>
         void updateLink(RxT & rx, const Indices<INDICES ...> &) {
             auto & l = query(links, &rx);
-            l = link(reincornated(var<INDICES>(rx, l), rx) ...);
+            l = link(reincarnated(var<INDICES>(rx, l), rx) ...);
         }
 
         // connecting

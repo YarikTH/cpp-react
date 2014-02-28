@@ -89,7 +89,7 @@ int main() {
     TEST(var6() == dynamic_allocated_var_initializer);
     cout << endl;
 
-    cout << "var reincornation testing\n" << endl;
+    cout << "var reincarnation testing\n" << endl;
 
     Var<int> * var05 = nullptr;
     Rx<int, std::function<int(int)>, int> * var7 = nullptr;
@@ -116,7 +116,7 @@ int main() {
     TEST((*var05)() == (*var7)());
     cout << endl;
 
-    cout << "rx reincornation testing\n" << endl;
+    cout << "rx reincarnation testing\n" << endl;
 
     for (auto i = 0; i < TEST_PASSES; ++i) {
         cout << "creating var8 = var01 + var02 + var03" << endl;

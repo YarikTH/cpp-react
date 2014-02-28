@@ -24,7 +24,7 @@ namespace react {
 
         Var(Var && newVar):
             Var(std::move(newVar.value)) {
-            dispatcher().reincornate(newVar, *this);
+            dispatcher().reincarnate(newVar, *this);
         }
 
         Var(const T & newValue):

@@ -46,7 +46,7 @@ namespace react {
             }
         }
 
-        void reincornate(const VarT & from, const VarT & to) {
+        void reincarnate(const VarT & from, const VarT & to) {
             auto ifrom = varsListeners.find(&from);
             auto ito = varsListeners.find(&from);
 
@@ -59,15 +59,15 @@ namespace react {
             ifrom->second.clear();
 
             for (auto & l : ito->second) {
-                reincornatedListenersVars[l][&from] = &to;
+                reincarnatedListenersVars[l][&from] = &to;
                 l->updateLink();
-                reincornatedListenersVars.erase(l);
+                reincarnatedListenersVars.erase(l);
             }
         }
 
-        const VarT & reincornated(const VarT * v, VarListener & l) {
+        const VarT & reincarnated(const VarT * v, VarListener & l) {
             try {
-                return *query(query(reincornatedListenersVars, &l), v);
+                return *query(query(reincarnatedListenersVars, &l), v);
             }
             catch (const NotConnected &) {
                 query(varsListeners, v);
@@ -143,7 +143,7 @@ namespace react {
 
         VarsListeners varsListeners;
         ListenersVarsValues destroyedVarsValues;
-        ListenersVarsVars reincornatedListenersVars;
+        ListenersVarsVars reincarnatedListenersVars;
     };
 
 }
