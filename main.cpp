@@ -118,9 +118,20 @@ int main() {
 
     cout << "rx reincornation testing\n" << endl;
 
-    // TODO
-    cout << "currently not implemented\n" << endl;
-
+    for (auto i = 0; i < TEST_PASSES; ++i) {
+        cout << "creating var8 = var01 + var02 + var03" << endl;
+        auto var8 = var01 + var02 + var03;
+        cout << "var01 = " << var01() << endl;
+        cout << "var02 = " << var02() << endl;
+        cout << "var03 = " << var03() << endl;
+        cout << "var8 = " << var8() << endl;
+        cout << "changing var01 to " << (var01 = (var01() + rand() % TEST_RAND_LIMIT))() << endl;
+        cout << "changing var02 to " << (var02 = (var02() + rand() % TEST_RAND_LIMIT))() << endl;
+        cout << "changing var03 to " << (var03 = (var03() + rand() % TEST_RAND_LIMIT))() << endl;
+        cout << "var8 = " << var8() << endl;
+        TEST(var8() == var01() + var02() + var03());
+        cout << endl;
+    }
 
     cout << "end testing\n" << endl;
 
