@@ -9,37 +9,37 @@ namespace test {
     public:
         class Info {
         public:
-            int failes = 0;
+            int fails = 0;
             int attempts = 0;
         };
 
         static void log(const std::string & str, int fail) {
             auto resstr = std::string(fail ? ": FAIL" : ": OK");
-            auto it = failes.find(str);
+            auto it = fails.find(str);
 
             std::cout << "testing: " << str << resstr << std::endl;
 
-            if (it != failes.end()) {
-                it->second.failes += fail;
+            if (it != fails.end()) {
+                it->second.fails += fail;
                 it->second.attempts++;
             }
             else {
-                failes[str] = { fail, 1 };
+                fails[str] = { fail, 1 };
             }
         }
 
         static void stats() {
-            for (auto & it : failes) {
-                std::cout << it.first << ": " << it.second.failes << " failes ";
+            for (auto & it : fails) {
+                std::cout << it.first << ": " << it.second.fails << " fails ";
                 std::cout << it.second.attempts << " attempts"<< std::endl;
             }
         }
 
     private:
-        static std::unordered_map<std::string, Info> failes;
+        static std::unordered_map<std::string, Info> fails;
     };
 
-    std::unordered_map<std::string, Log::Info> Log::failes;
+    std::unordered_map<std::string, Log::Info> Log::fails;
 
 }
 
