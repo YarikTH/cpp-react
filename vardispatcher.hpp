@@ -65,7 +65,7 @@ namespace react {
             }
         }
 
-        const VarT & reincarnated(const VarT * v, VarListener & l) {
+        const VarT & reincarnatedVar(const VarT * v, VarListener & l) {
             try {
                 return *query(query(reincarnatedListenersVars, &l), v);
             }
