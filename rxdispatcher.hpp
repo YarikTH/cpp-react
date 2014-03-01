@@ -68,7 +68,7 @@ namespace react {
         RxDispatcher() = default;
 
         template <unsigned int INDEX>
-        const auto & var(const RxT & rx, const LinkT & l) const {
+        const auto & var(const LinkT & l) const {
             return Accessor<INDEX>::Get(l.getVars());
         }
 
@@ -83,7 +83,7 @@ namespace react {
         T compute(const RxT & rx, const Indices<INDICES ...> &) const {
             auto & l = query(rxesLinks, &rx);
             auto & f = query(rxesFunctions, &rx);
-            return f(varValue(rx, var<INDICES>(rx, l)) ...);
+            return f(varValue(rx, var<INDICES>(l)) ...);
         }
 
         // link updating
@@ -96,7 +96,7 @@ namespace react {
         template <unsigned int ... INDICES>
         void updateLink(RxT & rx, const Indices<INDICES ...> &) {
             auto & l = query(rxesLinks, &rx);
-            l = link(reincarnatedVar(var<INDICES>(rx, l), rx) ...);
+            l = link(reincarnatedVar(var<INDICES>(l), rx) ...);
         }
 
         // connecting
