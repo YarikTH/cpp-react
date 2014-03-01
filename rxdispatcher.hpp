@@ -46,11 +46,11 @@ namespace react {
         void connect(RxT & rx, FN && f, LINK && l) {
             set(rxesLinks, &rx, std::forward<LINK>(l));
             set(rxesFunctions, &rx, std::forward<FN>(f));
-            connectListener(rx, l);
+            connectRxToLink(rx, l);
         }
 
         void disconnect(RxT & rx) {
-            disconnectListener(rx, query(rxesLinks, &rx));
+            disconnectRxFromLink(rx, query(rxesLinks, &rx));
             erase(rxesFunctions, &rx);
             erase(rxesLinks, &rx);
         }
@@ -101,31 +101,31 @@ namespace react {
         // connecting
 
         template <class U>
-        void connectListener(RxT & rx, const Link<U> & l) {
+        void connectRxToLink(RxT & rx, const Link<U> & l) {
             const auto & var = l.getVars().GetFirst();
             VarDispatcher<U>::instance().connect(var, rx);
         }
 
         template <class U, class UU, class ... US>
-        void connectListener(RxT & rx, const Link<U, UU, US ...> & l) {
+        void connectRxToLink(RxT & rx, const Link<U, UU, US ...> & l) {
             const auto & var = l.getVars().GetFirst();
             VarDispatcher<U>::instance().connect(var, rx);
-            connectListener(rx, Link<UU, US ...>(*l.getVars().Next()));
+            connectRxToLink(rx, Link<UU, US ...>(*l.getVars().Next()));
         }
 
         // diconnecting
 
         template <class U>
-        void disconnectListener(RxT & rx, const Link<U> & l) {
+        void disconnectRxFromLink(RxT & rx, const Link<U> & l) {
             const auto & var = l.getVars().GetFirst();
             VarDispatcher<U>::instance().disconnect(var, rx);
         }
 
         template <class U, class UU, class ... US>
-        void disconnectListener(RxT & rx, const Link<U, UU, US ...> & l) {
+        void disconnectRxFromLink(RxT & rx, const Link<U, UU, US ...> & l) {
             const auto & var = l.getVars().GetFirst();
             VarDispatcher<U>::instance().disconnect(var, rx);
-            disconnectListener(rx, Link<UU, US ...>(*l.getVars().Next()));
+            disconnectRxFromLink(rx, Link<UU, US ...>(*l.getVars().Next()));
         }
 
         RxesLinks rxesLinks;
