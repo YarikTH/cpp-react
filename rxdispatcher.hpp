@@ -75,7 +75,7 @@ namespace react {
         // computing
 
         template <class U>
-        const auto & value(const RxT & rx, const Var<U> * v) const {
+        const auto & varValue(const RxT & rx, const Var<U> * v) const {
             return VarDispatcher<U>::instance().value(v, rx);
         }
 
@@ -83,7 +83,7 @@ namespace react {
         T compute(const RxT & rx, const Indices<INDICES ...> &) const {
             auto & l = query(rxesLinks, &rx);
             auto & f = query(rxesFunctions, &rx);
-            return f(value(rx, var<INDICES>(rx, l)) ...);
+            return f(varValue(rx, var<INDICES>(rx, l)) ...);
         }
 
         // link updating
