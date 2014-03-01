@@ -92,14 +92,14 @@ int main() {
     cout << "var reincarnation testing\n" << endl;
 
     Var<int> * var05 = nullptr;
-    Rx<int, std::function<int(int)>, int> * var7 = nullptr;
+    Rx<int, int> * var7 = nullptr;
 
     var05 = new Var<int>(std::move([&] {
                 cout << "creating tmp var in lambda's scope" << endl;
                 auto tmp = var(7);
                 cout << "tmp value: " << tmp() << endl;
                 cout << "allocating var7 rx as tmp identity" << endl;
-                var7 = new Rx<int, std::function<int(int)>, int>([] (auto a) {
+                var7 = new Rx<int, int>([] (auto a) {
                         return a;
                     }, link(tmp));
                 cout << "var7 value: " << (*var7)() << endl;

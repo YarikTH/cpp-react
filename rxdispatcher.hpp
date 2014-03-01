@@ -16,16 +16,16 @@ namespace react {
     template <class ... TS>
     class Link;
 
-    template <class T, class FN, class ... TS>
+    template <class T, class ... TS>
     class Rx;
 
     template <class T>
     class VarDispatcher;
 
-    template <class T, class FN, class ... TS>
+    template <class T, class ... TS>
     class RxDispatcher {
     public:
-        using RxT = Rx<T, FN, TS ...>;
+        using RxT = Rx<T, TS ...>;
         using LinkT = Link<TS ...>;
         using Links = std::unordered_map<const RxT *, LinkT>;
         using Tuple = typename LinkT::Tuple;
@@ -34,24 +34,29 @@ namespace react {
         using Indices = tuple::Indices<INDICES ...>;
         template <unsigned int INDEX>
         using Accessor = tuple::Accessor<INDEX, const Var<TS> * ...>;
+        using RxFunction = std::function<T(const TS & ...)>;
+        using RxesFunctions = std::unordered_map<const RxT *, RxFunction>;
 
         static auto & instance() {
             static RxDispatcher dispatcher;
             return dispatcher;
         }
 
-        void connect(RxT & rx, const LinkT & link) {
-            set(links, &rx, link);
-            connectListener(rx, link);
+        template <class FN>
+        void connect(RxT & rx, FN && f, const LinkT & l) {
+            set(links, &rx, l);
+            set(rxesFunctions, &rx, std::forward<FN>(f));
+            connectListener(rx, l);
         }
 
         void disconnect(RxT & rx) {
             disconnectListener(rx, query(links, &rx));
+            erase(rxesFunctions, &rx);
             erase(links, &rx);
         }
 
-        T compute(const RxT & rx, FN fn) const {
-            return compute(rx, fn, AllIndices{});
+        T compute(const RxT & rx) const {
+            return compute(rx, AllIndices{});
         }
 
         void updateLink(RxT & rx) {
@@ -61,6 +66,11 @@ namespace react {
     private:
         RxDispatcher() = default;
 
+        template <unsigned int INDEX>
+        const auto & var(const RxT & rx, const LinkT & l) const {
+            return Accessor<INDEX>::Get(l.getVars());
+        }
+
         // computing
 
         template <class U>
@@ -68,15 +78,11 @@ namespace react {
             return VarDispatcher<U>::instance().value(v, rx);
         }
 
-        template <unsigned int INDEX>
-        const auto & var(const RxT & rx, const LinkT & l) const {
-            return Accessor<INDEX>::Get(l.getVars());
-        }
-
         template <unsigned int ... INDICES>
-        T compute(const RxT & rx, FN fn, const Indices<INDICES ...> &) const {
+        T compute(const RxT & rx, const Indices<INDICES ...> &) const {
             auto & l = query(links, &rx);
-            return fn(value(rx, var<INDICES>(rx, l)) ...);
+            auto & f = query(rxesFunctions, &rx);
+            return f(value(rx, var<INDICES>(rx, l)) ...);
         }
 
         // link updating
@@ -123,6 +129,7 @@ namespace react {
         }
 
         Links links;
+        RxesFunctions rxesFunctions;
     };
 
 }

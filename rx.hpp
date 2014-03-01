@@ -16,27 +16,26 @@ namespace react {
     template <class ... TS>
     class Link;
 
-    template <class T, class FN, class ... TS>
+    template <class T, class ... TS>
     class RxDispatcher;
 
-    template <class T, class FN, class ... TS>
+    template <class T, class ... TS>
     class Rx : public Var<T>, public VarListener {
     public:
         static auto & dispatcher() {
-            return RxDispatcher<T, FN, TS ...>::instance();
+            return RxDispatcher<T, TS ...>::instance();
         }
 
         Rx() = delete;
         Rx(const Rx &) = delete;
 
-        Rx(Rx && newRx):
-            fn(std::move(newRx.fn)){
+        Rx(Rx && newRx) {
             // TODO implement reincarnation
         }
 
-        Rx(FN newFn, const Link<TS ...> & link):
-            fn(newFn) {
-            dispatcher().connect(*this, link);
+        template <class FN>
+        Rx(FN && f, const Link<TS ...> & l) {
+            dispatcher().connect(*this, std::forward<FN>(f), l);
             updateValue();
         }
 
@@ -51,15 +50,12 @@ namespace react {
         }
 
         virtual void updateValue() override {
-            *this = dispatcher().compute(*this, fn);
+            *this = dispatcher().compute(*this);
         }
 
         virtual void updateLink() override {
             dispatcher().updateLink(*this);
         }
-
-    private:
-        FN fn;
     };
 
 } // namespace react

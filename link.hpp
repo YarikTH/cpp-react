@@ -8,7 +8,7 @@
 
 namespace react {
 
-    template <class T, class FN, class ... TS>
+    template <class T, class ... TS>
     class Rx;
 
     template <class ... TS>
@@ -18,12 +18,12 @@ namespace react {
 
         Link() = default;
 
-        Link(const Link & link):
-            vars(link.vars) {
+        Link(const Link & l):
+            vars(l.vars) {
         }
 
-        Link(Link && link):
-            vars(std::move(link.vars)) {
+        Link(Link && l):
+            vars(std::move(l.vars)) {
         }
 
         Link(const Tuple & newVars):
@@ -38,13 +38,13 @@ namespace react {
             vars(&newVars ...){
         }
 
-        Link & operator=(const Link & link) {
-            vars = link.vars;
+        Link & operator=(const Link & l) {
+            vars = l.vars;
             return *this;
         }
 
-        Link & operator=(Link && link) {
-            vars = std::move(link.vars);
+        Link & operator=(Link && l) {
+            vars = std::move(l.vars);
             return *this;
         }
 
@@ -53,9 +53,9 @@ namespace react {
         }
 
         template <class FN>
-        auto rx(FN fn) {
-            using RxType = Rx<decltype(fn(ref<TS>() ...)), FN, TS ...>;
-            return RxType(fn, *this);
+        auto rx(FN && f) {
+            using RxType = Rx<decltype(f(ref<TS>() ...)), TS ...>;
+            return RxType(std::forward<FN>(f), *this);
         }
 
     private:

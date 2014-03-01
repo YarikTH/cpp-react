@@ -53,9 +53,9 @@ namespace react {
         }
 
         template <class FN>
-        auto rx(FN fn) const {
-            using RxType = Rx<decltype(fn(value)), FN, T>;
-            return RxType(fn, link(*this));
+        auto rx(FN && f) const {
+            using RxType = Rx<decltype(f(value)), T>;
+            return RxType(std::forward<FN>(f), link(*this));
         }
 
         auto rx() const {

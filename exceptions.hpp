@@ -10,7 +10,7 @@ namespace react {
     template <class T>
     class Var;
 
-    template <class T, class FN, class ... TS>
+    template <class T, class ... TS>
     class Rx;
 
     class NotConnected : public std::exception {
@@ -86,8 +86,8 @@ namespace react {
         using Type = VarNotConnected;
     };
 
-    template <class T, class FN, class ... TS>
-    class NotConnectedType<Rx<T, FN, TS ...> *> {
+    template <class T, class ... TS>
+    class NotConnectedType<Rx<T, TS ...> *> {
     public:
         using Type = RxNotConnected;
     };
@@ -104,8 +104,8 @@ namespace react {
         using Type = VarNotConnected;
     };
 
-    template <class T, class FN, class ... TS>
-    class NotConnectedType<Rx<T, FN, TS ...>> {
+    template <class T, class ... TS>
+    class NotConnectedType<Rx<T, TS ...>> {
     public:
         using Type = RxNotConnected;
     };
@@ -128,8 +128,8 @@ namespace react {
         using Type = VarAlreadyConnected;
     };
 
-    template <class T, class FN, class ... TS>
-    class AlreadyConnectedType<Rx<T, FN, TS ...> *> {
+    template <class T, class ... TS>
+    class AlreadyConnectedType<Rx<T, TS ...> *> {
     public:
         using Type = RxAlreadyConnected;
     };
@@ -146,8 +146,8 @@ namespace react {
         using Type = VarAlreadyConnected;
     };
 
-    template <class T, class FN, class ... TS>
-    class AlreadyConnectedType<Rx<T, FN, TS ...>> {
+    template <class T, class ... TS>
+    class AlreadyConnectedType<Rx<T, TS ...>> {
     public:
         using Type = RxAlreadyConnected;
     };
