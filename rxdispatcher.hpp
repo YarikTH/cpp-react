@@ -7,6 +7,7 @@
 #include "link.hpp"
 #include "exceptions.hpp"
 #include <unordered_map>
+#include <functional>
 
 namespace react {
 
