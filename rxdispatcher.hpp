@@ -27,16 +27,17 @@ namespace react {
     class RxDispatcher {
     public:
         using RxT = Rx<T, TS ...>;
+        using Fn = std::function<T(const TS & ...)>;
         using LinkT = Link<TS ...>;
+
         using RxesLinks = std::unordered_map<const RxT *, LinkT>;
-        using Tuple = typename LinkT::Tuple;
-        using AllIndices = typename Tuple::AllIndices;
-        template <unsigned int ... INDICES>
-        using Indices = tuple::Indices<INDICES ...>;
+        using RxesFns = std::unordered_map<const RxT *, Fn>;
+
         template <unsigned int INDEX>
         using Accessor = tuple::Accessor<INDEX, const Var<TS> * ...>;
-        using RxFunction = std::function<T(const TS & ...)>;
-        using RxesFunctions = std::unordered_map<const RxT *, RxFunction>;
+        template <unsigned int ... INDICES>
+        using Indices = tuple::Indices<INDICES ...>;
+        using AllIndices = typename LinkT::Tuple::AllIndices;
 
         static auto & instance() {
             static RxDispatcher dispatcher;
@@ -46,13 +47,13 @@ namespace react {
         template <class FN, class LINK>
         void connect(RxT & rx, FN && f, LINK && l) {
             set(rxesLinks, &rx, std::forward<LINK>(l));
-            set(rxesFunctions, &rx, std::forward<FN>(f));
+            set(rxesFns, &rx, std::forward<FN>(f));
             connectRxToLink(rx, l);
         }
 
         void disconnect(RxT & rx) {
             disconnectRxFromLink(rx, query(rxesLinks, &rx));
-            erase(rxesFunctions, &rx);
+            erase(rxesFns, &rx);
             erase(rxesLinks, &rx);
         }
 
@@ -82,7 +83,7 @@ namespace react {
         template <unsigned int ... INDICES>
         T compute(const RxT & rx, const Indices<INDICES ...> &) const {
             auto & l = query(rxesLinks, &rx);
-            auto & f = query(rxesFunctions, &rx);
+            auto & f = query(rxesFns, &rx);
             return f(varValue(rx, var<INDICES>(l)) ...);
         }
 
@@ -130,7 +131,7 @@ namespace react {
         }
 
         RxesLinks rxesLinks;
-        RxesFunctions rxesFunctions;
+        RxesFns rxesFns;
     };
 
 }
