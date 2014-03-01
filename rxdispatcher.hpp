@@ -42,9 +42,9 @@ namespace react {
             return dispatcher;
         }
 
-        template <class FN>
-        void connect(RxT & rx, FN && f, const LinkT & l) {
-            set(rxesLinks, &rx, l);
+        template <class FN, class LINK>
+        void connect(RxT & rx, FN && f, LINK && l) {
+            set(rxesLinks, &rx, std::forward<LINK>(l));
             set(rxesFunctions, &rx, std::forward<FN>(f));
             connectListener(rx, l);
         }

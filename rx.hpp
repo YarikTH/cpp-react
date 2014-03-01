@@ -33,9 +33,11 @@ namespace react {
             // TODO implement reincarnation
         }
 
-        template <class FN>
-        Rx(FN && f, const Link<TS ...> & l) {
-            dispatcher().connect(*this, std::forward<FN>(f), l);
+        template <class FN, class LINK>
+        Rx(FN && f, LINK && l) {
+            dispatcher().connect(*this,
+                                 std::forward<FN>(f),
+                                 std::forward<LINK>(l));
             updateValue();
         }
 
