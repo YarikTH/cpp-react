@@ -27,7 +27,7 @@ namespace react {
     public:
         using RxT = Rx<T, TS ...>;
         using LinkT = Link<TS ...>;
-        using Links = std::unordered_map<const RxT *, LinkT>;
+        using RxesLinks = std::unordered_map<const RxT *, LinkT>;
         using Tuple = typename LinkT::Tuple;
         using AllIndices = typename Tuple::AllIndices;
         template <unsigned int ... INDICES>
@@ -44,15 +44,15 @@ namespace react {
 
         template <class FN>
         void connect(RxT & rx, FN && f, const LinkT & l) {
-            set(links, &rx, l);
+            set(rxesLinks, &rx, l);
             set(rxesFunctions, &rx, std::forward<FN>(f));
             connectListener(rx, l);
         }
 
         void disconnect(RxT & rx) {
-            disconnectListener(rx, query(links, &rx));
+            disconnectListener(rx, query(rxesLinks, &rx));
             erase(rxesFunctions, &rx);
-            erase(links, &rx);
+            erase(rxesLinks, &rx);
         }
 
         T compute(const RxT & rx) const {
@@ -80,7 +80,7 @@ namespace react {
 
         template <unsigned int ... INDICES>
         T compute(const RxT & rx, const Indices<INDICES ...> &) const {
-            auto & l = query(links, &rx);
+            auto & l = query(rxesLinks, &rx);
             auto & f = query(rxesFunctions, &rx);
             return f(value(rx, var<INDICES>(rx, l)) ...);
         }
@@ -94,7 +94,7 @@ namespace react {
 
         template <unsigned int ... INDICES>
         void updateLink(RxT & rx, const Indices<INDICES ...> &) {
-            auto & l = query(links, &rx);
+            auto & l = query(rxesLinks, &rx);
             l = link(reincarnated(var<INDICES>(rx, l), rx) ...);
         }
 
@@ -128,7 +128,7 @@ namespace react {
             disconnectListener(rx, Link<UU, US ...>(*l.getVars().Next()));
         }
 
-        Links links;
+        RxesLinks rxesLinks;
         RxesFunctions rxesFunctions;
     };
 
