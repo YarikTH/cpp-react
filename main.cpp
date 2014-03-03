@@ -16,120 +16,144 @@ int main() {
 
     cout << "begin testing\n" << endl;
 
-    auto var01 = var(4);
-    auto var02 = var(1);
-    auto var03 = var(false);
-    auto var1 = var01 * var02;
-    auto var2 = var01 + var1;
-    auto var3 = var1 + var2;
-    auto var4 = var3 == var3;
-    auto var5 = var03.rx();
-
-    auto test = [&] {
-        cout << "var01: " << var01() << endl;
-        cout << "var02: " << var02() << endl;
-        cout << "var03: " << var03() << endl;
-        cout << "var1: " << var1() << endl;
-        cout << "var2: " << var2() << endl;
-        cout << "var3: " << var3() << endl;
-        cout << "var4: " << var4() << endl;
-        cout << "var5: " << var5() << endl;
-
-        TEST(var1() == var01() * var02());
-        TEST(var2() == var01() + var1());
-        TEST(var3() == var1() + var2());
-        TEST(var4() == (var3() == var3()));
-        TEST(var5() == var03());
-
-        cout << endl;
-    };
-
-    test();
-
     for (unsigned int i = 0; i < TEST_PASSES; ++i) {
+
+        auto var1 = var(4);
+        auto var2 = var(1);
+        auto var3 = var(false);
+        auto rx1 = var1 * var2;
+        auto rx2 = var1 + rx1;
+        auto rx3 = rx1 + rx2;
+        auto rx4 = rx3 == rx3;
+        auto rx5 = var3.rx();
+
+        auto test = [&] {
+            cout << "var1: " << var1() << endl;
+            cout << "var2: " << var2() << endl;
+            cout << "var3: " << var3() << endl;
+            cout << "rx1: " << rx1() << endl;
+            cout << "rx2: " << rx2() << endl;
+            cout << "rx3: " << rx3() << endl;
+            cout << "rx4: " << rx4() << endl;
+            cout << "rx5: " << rx5() << endl;
+
+            TEST(rx1() == var1() * var2());
+            TEST(rx2() == var1() + rx1());
+            TEST(rx3() == rx1() + rx2());
+            TEST(rx4() == (rx3() == rx3()));
+            TEST(rx5() == var3());
+
+            cout << endl;
+        };
+
+        test();
+
         auto change = rand() % 3;
         auto changed = 0;
 
         if (change) {
-            cout << "var01 changed" << endl;
-            var01 = rand() % TEST_RAND_LIMIT;
+            cout << "var1 changed" << endl;
+            var1 = rand() % TEST_RAND_LIMIT;
             changed++;
         }
 
         if (change) {
-            cout << "var02 changed" << endl;
-            var02 = rand() % TEST_RAND_LIMIT;
+            cout << "var2 changed" << endl;
+            var2 = rand() % TEST_RAND_LIMIT;
             changed++;
         }
 
         if (change || changed == 0) {
-            cout << "var03 changed" << endl;
-            var03 = (rand() % 2) ? true : false;
+            cout << "var3 changed" << endl;
+            var3 = (rand() % 2) ? true : false;
             changed++;
         }
 
         test();
-    }
 
-    cout << "var freezing testing\n" << endl;
+        cout << "var freezing testing\n" << endl;
 
-    auto dynamic_allocated_var_initializer = 4;
-    cout << "allocating var04" << endl;
-    auto * var04 = new Var<int>(dynamic_allocated_var_initializer);
-    auto var6 = var04->rx();
-    cout << "dynamic allocated var04: " << (*var04)() << endl;
-    cout << "identity var6: " << var6() << endl;
-    cout << "deleting var04" << endl;
-    delete var04;
-    cout << "incrementing var6" << endl;
-    var6 = var6() + 1;
-    cout << "updating var6" << endl;
-    var6.updateValue();
-    cout << "identity var6 after update and var04 delete: " << var6() << endl;
-    TEST(var6() == dynamic_allocated_var_initializer);
-    cout << endl;
+        auto dynamic_allocated_var_initializer = 4;
+        cout << "allocating var4" << endl;
+        auto * var4 = new Var<int>(dynamic_allocated_var_initializer);
+        auto rx6 = var4->rx();
+        cout << "dynamic allocated var4: " << (*var4)() << endl;
+        cout << "identity rx6: " << rx6() << endl;
+        cout << "deleting var4" << endl;
+        delete var4;
+        cout << "incrementing rx6" << endl;
+        rx6 = rx6() + 1;
+        cout << "updating rx6" << endl;
+        rx6.updateValue();
+        cout << "identity rx6 after update and var4 delete: " << rx6() << endl;
+        TEST(rx6() == dynamic_allocated_var_initializer);
+        cout << endl;
 
-    cout << "var reincarnation testing\n" << endl;
+        cout << "var reincarnation testing\n" << endl;
 
-    Var<int> * var05 = nullptr;
-    Rx<int, int> * var7 = nullptr;
+        Var<int> * var5 = nullptr;
+        Rx<int, int> * rx7 = nullptr;
 
-    var05 = new Var<int>(std::move([&] {
-                cout << "creating tmp var in lambda's scope" << endl;
-                auto tmp = var(7);
-                cout << "tmp value: " << tmp() << endl;
-                cout << "allocating var7 rx as tmp identity" << endl;
-                var7 = new Rx<int, int>([] (auto a) {
-                        return a;
-                    }, link(tmp));
-                cout << "var7 value: " << (*var7)() << endl;
-                return tmp;
-            })());
+        var5 = new Var<int>(std::move([&] {
+                    cout << "creating tmp var in lambda's scope" << endl;
+                    auto tmp = var(7);
+                    rx7 = new Rx<int, int>([] (auto a) {
+                            return a;
+                        }, link(tmp));
+                    cout << "rx7 value: " << (*rx7)() << endl;
+                    return tmp;
+                })());
 
-    cout << "return lambdas's tmp by value" << endl;
-    cout << "explicitly pass lambda's result to move contructor of var05" << endl;
-    cout << "var05 value: " << (*var05)() << endl;
-    cout << "var7 value: " << (*var7)() << endl;
-    *var05 = 8;
-    cout << "update var05 value: " << (*var05)() << endl;
-    cout << "var7 value: " << (*var7)() << endl;
-    TEST((*var05)() == (*var7)());
-    cout << endl;
+        cout << "return lambdas's tmp by value" << endl;
+        cout << "explicitly pass lambda's result to move contructor of var5" << endl;
+        cout << "var5 value: " << (*var5)() << endl;
+        cout << "rx7 value: " << (*rx7)() << endl;
+        *var5 = rand() % TEST_RAND_LIMIT;
+        cout << "update var5 value: " << (*var5)() << endl;
+        cout << "rx7 value: " << (*rx7)() << endl;
+        TEST((*var5)() == (*rx7)());
+        cout << endl;
 
-    cout << "rx reincarnation testing\n" << endl;
+        cout << "rx reincarnation testing\n" << endl;
 
-    for (auto i = 0; i < TEST_PASSES; ++i) {
-        cout << "creating var8 = var01 + var02 + var03" << endl;
-        auto var8 = var01 + var02 + var03;
-        cout << "var01 = " << var01() << endl;
-        cout << "var02 = " << var02() << endl;
-        cout << "var03 = " << var03() << endl;
-        cout << "var8 = " << var8() << endl;
-        cout << "changing var01 to " << (var01 = (var01() + rand() % TEST_RAND_LIMIT))() << endl;
-        cout << "changing var02 to " << (var02 = (var02() + rand() % TEST_RAND_LIMIT))() << endl;
-        cout << "changing var03 to " << (var03 = (var03() + rand() % TEST_RAND_LIMIT))() << endl;
-        cout << "var8 = " << var8() << endl;
-        TEST(var8() == var01() + var02() + var03());
+        Rx<int, int> * rx9 = nullptr;
+        auto rx8 = new Rx<int, int>(std::move([&var5, &rx9] {
+                    cout << "creating tmp rx in lambda's scope as var5 identity" << endl;
+                    auto tmp = var5->rx();
+                    cout << "tmp value: " << tmp() << endl;
+                    cout << "allocating rx9 rx as tmp identity" << endl;
+                    rx9 = new Rx<int, int>([] (auto a) {
+                            return a;
+                        }, link(tmp));
+                    cout << "rx9 value: " << (*rx9)() << endl;
+                    return tmp;
+                } ()));
+
+        cout << "return lambdas's tmp by value" << endl;
+        cout << "explicitly pass lambda's result to move contructor of rx8" << endl;
+        cout << "var5 value: " << (*var5)() << endl;
+        cout << "rx8 value: " << (*rx8)() << endl;
+        cout << "rx9 value: " << (*rx9)() << endl;
+        *var5 = rand() % TEST_RAND_LIMIT;
+        cout << "update var5 value: " << (*var5)() << endl;
+        cout << "rx8 value: " << (*rx8)() << endl;
+        cout << "rx9 value: " << (*rx9)() << endl;
+        TEST((*var5)() == (*rx8)() && (*rx8)() == (*rx9)());
+        cout << endl;
+
+        cout << "rx shadowing testing\n" << endl;
+
+        cout << "creating rx10 = var1 + var2 + var3" << endl;
+        auto rx10 = var1 + var2 + var3;
+        cout << "var1 = " << var1() << endl;
+        cout << "var2 = " << var2() << endl;
+        cout << "var3 = " << var3() << endl;
+        cout << "rx10 = " << rx10() << endl;
+        cout << "changing var1 to " << (var1 = (var1() + rand() % TEST_RAND_LIMIT))() << endl;
+        cout << "changing var2 to " << (var2 = (var2() + rand() % TEST_RAND_LIMIT))() << endl;
+        cout << "changing var3 to " << (var3 = (var3() + rand() % TEST_RAND_LIMIT))() << endl;
+        cout << "rx10 = " << rx10() << endl;
+        TEST(rx10() == var1() + var2() + var3());
         cout << endl;
     }
 
