@@ -170,6 +170,33 @@ int main() {
         cout << "rxl1: " << rxl1() << endl;
         TEST(var1() * 7 == rxl1());
         cout << endl;
+
+        cout << "creating Var<int> Foo::v and RxRelaxed<int> Bar::r" << endl;
+
+        class Foo {
+        public:
+            Var<int> v;
+        };
+
+        class Bar {
+        public:
+            Bar(const Var<int> & v):
+                r(v.rxRelaxed()){
+            }
+
+            RxRelaxed<int> r;
+        };
+
+        Foo f;
+        Bar b(f.v);
+
+        cout << "foo::v " << f.v() << endl;
+        cout << "bar::r " << b.r() << endl;
+        f.v = rand() % TEST_RAND_LIMIT;
+        cout << "updating foo::v " << f.v() << endl;
+        cout << "bar::r " << b.r() << endl;
+        TEST(f.v() == b.r());
+        cout << endl;
     }
 
     cout << "end testing\n" << endl;
