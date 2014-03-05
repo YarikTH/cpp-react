@@ -5,6 +5,7 @@
 
 #include "var.hpp"
 #include "rx.hpp"
+#include "rxrelaxed.hpp"
 #include "operators.hpp"
 
 namespace react {

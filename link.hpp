@@ -5,6 +5,7 @@
 
 #include <tuple/tuple.hpp>
 #include "rx.hpp"
+#include "rxrelaxed.hpp"
 
 namespace react {
 
@@ -55,6 +56,12 @@ namespace react {
         template <class FN>
         auto rx(FN && f) {
             using RxType = Rx<decltype(f(ref<TS>() ...)), TS ...>;
+            return RxType(std::forward<FN>(f), *this);
+        }
+
+        template <class FN>
+        auto rxRelaxed(FN && f) {
+            using RxType = RxRelaxed<decltype(f(ref<TS>() ...))>;
             return RxType(std::forward<FN>(f), *this);
         }
 

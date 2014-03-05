@@ -6,6 +6,7 @@
 #include <utility>
 #include "vardispatcher.hpp"
 #include "rx.hpp"
+#include "rxrelaxed.hpp"
 
 namespace react {
 
@@ -60,6 +61,18 @@ namespace react {
 
         auto rx() const {
             return rx([] (auto a) {
+                    return a;
+                });
+        }
+
+        template <class FN>
+        auto rxRelaxed(FN && f) const {
+            using RxType = RxRelaxed<decltype(f(value))>;
+            return RxType{std::forward<FN>(f), link(*this)};
+        }
+
+        auto rxRelaxed() const {
+            return rxRelaxed([] (auto a) {
                     return a;
                 });
         }

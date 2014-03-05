@@ -155,6 +155,21 @@ int main() {
         cout << "rx10 = " << rx10() << endl;
         TEST(rx10() == var1() + var2() + var3());
         cout << endl;
+
+        cout << "relaxed rx testing" << endl;
+
+        cout << "creating relaxed rx as var * 7" << endl;
+        RxRelaxed<int> rxl1 = var1.rxRelaxed([] (auto a) {
+                return a * 7;
+            });
+
+        cout << "var1: " << var1() << endl;
+        cout << "rxl1: " << rxl1() << endl;
+        var1 = rand() % TEST_RAND_LIMIT;
+        cout << "updating var1: " << var1() << endl;
+        cout << "rxl1: " << rxl1() << endl;
+        TEST(var1() * 7 == rxl1());
+        cout << endl;
     }
 
     cout << "end testing\n" << endl;
