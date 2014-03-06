@@ -26,7 +26,7 @@ namespace react {
             return RxDispatcher<T, TS ...>::instance();
         }
 
-        Rx() = delete;
+        Rx() = default;
         Rx(const Rx &) = delete;
 
         Rx(Rx && newRx) {
@@ -35,14 +35,12 @@ namespace react {
 
         template <class FN, class LINK>
         Rx(FN && f, LINK && l) {
-            dispatcher().connect(*this,
-                                 std::forward<FN>(f),
-                                 std::forward<LINK>(l));
-            updateValue();
+            reconnect(std::forward<FN>(f), std::forward<LINK>(l));
         }
 
         virtual ~Rx() {
-            dispatcher().disconnect(*this);
+            if (dispatcher().connected(*this))
+                dispatcher().disconnect(*this);
         }
 
         template <class U>
@@ -52,11 +50,32 @@ namespace react {
         }
 
         virtual void updateValue() override {
-            *this = dispatcher().compute(*this);
+            if (dispatcher().connected(*this))
+                *this = dispatcher().compute(*this);
         }
 
         virtual void updateLink() override {
-            dispatcher().updateLink(*this);
+            if (dispatcher().connected(*this))
+                dispatcher().updateLink(*this);
+        }
+
+        template <class FN>
+        void setFn(FN && fn) {
+            if (dispatcher().connected(*this)) {
+                dispatcher().setFn(*this, std::forward<FN>(fn));
+                *this = dispatcher().compute(*this);
+            }
+        }
+
+        template <class FN, class LINK>
+        void reconnect(FN && f, LINK && l) {
+            if (dispatcher().connected(*this))
+                dispatcher().disconnect(*this);
+
+            dispatcher().connect(*this,
+                                 std::forward<FN>(f),
+                                 std::forward<LINK>(l));
+            *this = dispatcher().compute(*this);
         }
     };
 

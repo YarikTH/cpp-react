@@ -6,6 +6,8 @@
 #include "rx.hpp"
 #include "exceptions.hpp"
 #include <unordered_map>
+#include <functional>
+#include <utility>
 
 namespace react {
 
@@ -29,11 +31,19 @@ namespace react {
         }
 
         template <class FN, class ... U>
-        auto connect(VarListener & rx, FN f, const Link<U ...> & l) {
+        void connect(VarListener & rx, FN && f, const Link<U ...> & l) {
             set(rxDispatchers, &rx, &RxDispatcherAccessorNodeImpl<T, U ...>::instance());
             dispatcher<U ...>().connect(static_cast<Rx<T, U ...> &>(rx),
-                                           f,
-                                           l);
+                                        std::forward<FN>(f),
+                                        l);
+        }
+
+        template <class FN, class ... U>
+        void connect(VarListener & rx, FN && f, Link<U ...> && l) {
+            set(rxDispatchers, &rx, &RxDispatcherAccessorNodeImpl<T, U ...>::instance());
+            dispatcher<U ...>().connect(static_cast<Rx<T, U ...> &>(rx),
+                                        std::forward<FN>(f),
+                                        std::move(l));
         }
 
         void disconnect(VarListener & l) {
@@ -47,6 +57,10 @@ namespace react {
 
         void updateLink(VarListener & l) {
             query(rxDispatchers, &l)->updateLink(l);
+        }
+
+        bool connected(VarListener & l) {
+            return rxDispatchers.find(&l) != rxDispatchers.end();
         }
 
     private:

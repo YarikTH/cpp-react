@@ -65,6 +65,11 @@ namespace react {
             return RxType(std::forward<FN>(f), *this);
         }
 
+        template <class RX, class FN>
+        void reconnect(RX & rx, FN && f) {
+            rx.reconnect(std::forward<FN>(f), *this);
+        }
+
     private:
         template <class T>
         static auto & ref() {

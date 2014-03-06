@@ -65,6 +65,17 @@ namespace react {
             updateLink(rx, AllIndices{});
         }
 
+        bool connected(RxT & rx) {
+            return rxesLinks.find(&rx) != rxesLinks.end() &&
+                rxesFns.find(&rx) != rxesFns.end();
+        }
+
+        template <class FN>
+        void setFn(RxT & rx, FN && fn) {
+            query(rxesFns, &rx);
+            rxesFns[&rx] = std::forward<FN>(fn);
+        }
+
     private:
         RxDispatcher() = default;
 

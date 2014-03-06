@@ -23,7 +23,7 @@ namespace react {
             return RxDispatcherAccessor<T>::instance();
         }
 
-        RxRelaxed() = delete;
+        RxRelaxed() = default;
         RxRelaxed(const RxRelaxed &) = delete;
 
         RxRelaxed(RxRelaxed && newRxRelaxed) {
@@ -32,14 +32,17 @@ namespace react {
 
         template <class FN, class ... U>
         RxRelaxed(FN && f, const Link<U ...> & l) {
-            dispatcher().connect(*this,
-                                 std::forward<FN>(f),
-                                 l);
-            updateValue();
+            reconnect(std::forward<FN>(f), l);
+        }
+
+        template <class FN, class ... U>
+        RxRelaxed(FN && f, Link<U ...> && l) {
+            reconnect(std::forward<FN>(f), std::move(l));
         }
 
         virtual ~RxRelaxed() {
-            dispatcher().disconnect(*this);
+            if (dispatcher().connected(*this))
+                dispatcher().disconnect(*this);
         }
 
         template <class U>
@@ -49,11 +52,34 @@ namespace react {
         }
 
         virtual void updateValue() override {
-            *this = dispatcher().compute(*this);
+            if (dispatcher().connected(*this))
+                *this = dispatcher().compute(*this);
         }
 
         virtual void updateLink() override {
-            dispatcher().updateLink(*this);
+            if (dispatcher().connected(*this))
+                dispatcher().updateLink(*this);
+        }
+
+        template <class FN, class ... U>
+        void reconnect(FN && f, const Link<U ...> & l) {
+            if (dispatcher().connected(*this))
+                dispatcher().disconnect(*this);
+
+            dispatcher().connect(*this, std::forward<FN>(f), l);
+            *this = dispatcher().compute(*this);
+        }
+
+        template <class FN, class ... U>
+        void reconnect(FN && f, Link<U ...> && l) {
+            if (dispatcher().connected(*this))
+                dispatcher().disconnect(*this);
+
+            dispatcher().connect(*this,
+                                 std::forward<FN>(f),
+                                 std::move(l));
+            updateValue();
+            *this = dispatcher().compute(*this);
         }
     };
 

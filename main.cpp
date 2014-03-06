@@ -156,7 +156,7 @@ int main() {
         TEST(rx10() == var1() + var2() + var3());
         cout << endl;
 
-        cout << "relaxed rx testing" << endl;
+        cout << "relaxed rx testing\n" << endl;
 
         cout << "creating relaxed rx as var * 7" << endl;
         RxRelaxed<int> rxl1 = var1.rxRelaxed([] (auto a) {
@@ -180,8 +180,22 @@ int main() {
 
         class Bar {
         public:
-            Bar(const Var<int> & v):
-                r(v.rxRelaxed()){
+            Bar(const Var<int> & v) {
+                identity(v);
+            }
+
+            void square(const Var<int> & v) {
+                cout << "connecting bar::r to foo::v with square function" << endl;
+                link(v).reconnect(r, [] (int a) {
+                        return a * a;
+                    });
+            }
+
+            void identity(const Var<int> & v) {
+                cout << "connecting bar::r to foo::v with identity function" << endl;
+                link(v).reconnect(r, [] (auto a) {
+                        return a;
+                    });
             }
 
             RxRelaxed<int> r;
@@ -196,6 +210,30 @@ int main() {
         cout << "updating foo::v " << f.v() << endl;
         cout << "bar::r " << b.r() << endl;
         TEST(f.v() == b.r());
+        b.square(f.v);
+        cout << "foo::v " << f.v() << endl;
+        cout << "bar::r " << b.r() << endl;
+        TEST(f.v() * f.v() == b.r());
+        b.identity(f.v);
+        cout << "foo::v " << f.v() << endl;
+        cout << "bar::r " << b.r() << endl;
+        TEST(f.v() == b.r());
+        cout << endl;
+
+        cout << "setFn() testing\n" << endl;
+        cout << "creating rx11 as var6 identity" << endl;
+        auto var6 = var(rand() % TEST_RAND_LIMIT);
+        auto rx11 = var6.rx();
+        cout << "var6 value: " << var6() << endl;
+        cout << "rx11 value: " << rx11() << endl;
+        TEST(var6() == rx11());
+        cout << "change rx11 function to square" << endl;
+        rx11.setFn([] (auto a) {
+                return a * a;
+            });
+        cout << "var6 value: " << var6() << endl;
+        cout << "rx11 value: " << rx11() << endl;
+        TEST(var6() * var6() == rx11());
         cout << endl;
     }
 
