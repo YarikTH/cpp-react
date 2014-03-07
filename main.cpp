@@ -180,20 +180,25 @@ int main() {
 
         class Bar {
         public:
-            Bar(const Var<int> & v) {
-                identity(v);
+            using VarType = int;
+
+            Bar(const Var<VarType> & v) {
+                cout << "connecting bar::r to foo::v with identity function" << endl;
+                link(v).reconnect(r, [] (VarType a) {
+                        return a;
+                    });
             }
 
-            void square(const Var<int> & v) {
+            void square() {
                 cout << "connecting bar::r to foo::v with square function" << endl;
-                link(v).reconnect(r, [] (int a) {
+                r.setFn([] (VarType a) {
                         return a * a;
                     });
             }
 
-            void identity(const Var<int> & v) {
+            void identity() {
                 cout << "connecting bar::r to foo::v with identity function" << endl;
-                link(v).reconnect(r, [] (auto a) {
+                r.setFn([] (VarType a) {
                         return a;
                     });
             }
@@ -210,11 +215,11 @@ int main() {
         cout << "updating foo::v " << f.v() << endl;
         cout << "bar::r " << b.r() << endl;
         TEST(f.v() == b.r());
-        b.square(f.v);
+        b.square();
         cout << "foo::v " << f.v() << endl;
         cout << "bar::r " << b.r() << endl;
         TEST(f.v() * f.v() == b.r());
-        b.identity(f.v);
+        b.identity();
         cout << "foo::v " << f.v() << endl;
         cout << "bar::r " << b.r() << endl;
         TEST(f.v() == b.r());

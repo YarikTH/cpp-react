@@ -63,6 +63,18 @@ namespace react {
             return rxDispatchers.find(&l) != rxDispatchers.end();
         }
 
+        template <class ... U>
+        void setFn(VarListener & rx, const std::function<T(U ...)> & fn) {
+            dispatcher<U ...>().setFn(static_cast<Rx<T, U ...> &>(rx),
+                                      fn);
+        }
+
+        template <class ... U>
+        void setFn(VarListener & rx, std::function<T(U ...)> && fn) {
+            dispatcher<U ...>().setFn(static_cast<Rx<T, U ...> &>(rx),
+                                      std::move(fn));
+        }
+
     private:
         RxDispatcherAccessor() = default;
 

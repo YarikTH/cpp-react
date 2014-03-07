@@ -4,9 +4,11 @@
 #define RXRELAXED_HPP
 
 #include <utility>
+#include <functional>
 #include "var.hpp"
 #include "varlistener.hpp"
 #include "rxdispatcheraccessor.hpp"
+#include "functiontype.hpp"
 
 namespace react {
 
@@ -59,6 +61,17 @@ namespace react {
         virtual void updateLink() override {
             if (dispatcher().connected(*this))
                 dispatcher().updateLink(*this);
+        }
+
+        template <class FN>
+        void setFn(FN && fn) {
+            using Function = std::function<FunctionType<FN>>;
+
+            if (!dispatcher().connected(*this))
+                return;
+
+            dispatcher().setFn(*this, Function{std::forward<FN>(fn)});
+            *this = dispatcher().compute(*this);
         }
 
         template <class FN, class ... U>
