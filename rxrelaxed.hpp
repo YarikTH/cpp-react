@@ -32,14 +32,9 @@ namespace react {
             // TODO implement reincarnation
         }
 
-        template <class FN, class ... U>
-        RxRelaxed(FN && f, const Link<U ...> & l) {
-            reconnect(std::forward<FN>(f), l);
-        }
-
-        template <class FN, class ... U>
-        RxRelaxed(FN && f, Link<U ...> && l) {
-            reconnect(std::forward<FN>(f), std::move(l));
+        template <class FN, class LINK>
+        RxRelaxed(FN && f, LINK && l) {
+            reconnect(std::forward<FN>(f), std::forward<LINK>(l));
         }
 
         virtual ~RxRelaxed() {
@@ -74,24 +69,14 @@ namespace react {
             *this = dispatcher().compute(*this);
         }
 
-        template <class FN, class ... U>
-        void reconnect(FN && f, const Link<U ...> & l) {
-            if (dispatcher().connected(*this))
-                dispatcher().disconnect(*this);
-
-            dispatcher().connect(*this, std::forward<FN>(f), l);
-            *this = dispatcher().compute(*this);
-        }
-
-        template <class FN, class ... U>
-        void reconnect(FN && f, Link<U ...> && l) {
+        template <class FN, class LINK>
+        void reconnect(FN && f, LINK && l) {
             if (dispatcher().connected(*this))
                 dispatcher().disconnect(*this);
 
             dispatcher().connect(*this,
                                  std::forward<FN>(f),
-                                 std::move(l));
-            updateValue();
+                                 std::forward<LINK>(l));
             *this = dispatcher().compute(*this);
         }
     };

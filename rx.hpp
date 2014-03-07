@@ -61,10 +61,11 @@ namespace react {
 
         template <class FN>
         void setFn(FN && fn) {
-            if (dispatcher().connected(*this)) {
-                dispatcher().setFn(*this, std::forward<FN>(fn));
-                *this = dispatcher().compute(*this);
-            }
+            if (!dispatcher().connected(*this))
+                return;
+
+            dispatcher().setFn(*this, std::forward<FN>(fn));
+            *this = dispatcher().compute(*this);
         }
 
         template <class FN, class LINK>
