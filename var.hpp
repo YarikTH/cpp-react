@@ -42,6 +42,18 @@ namespace react {
             dispatcher().disconnect(*this);
         }
 
+        auto & operator=(const T& newValue) {
+            value = newValue;
+            dispatcher().notifyChange(*this);
+            return *this;
+        }
+
+        auto & operator=(T&& newValue) {
+            value = std::move(newValue);
+            dispatcher().notifyChange(*this);
+            return *this;
+        }
+
         template <class U>
         auto & operator=(U && newValue) {
             value = std::forward<U>(newValue);
@@ -49,7 +61,15 @@ namespace react {
             return *this;
         }
 
+        operator const T&() const {
+            return value;
+        }
+
         const auto & operator()() const {
+            return value;
+        }
+
+        const auto& getValue() const {
             return value;
         }
 
