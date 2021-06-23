@@ -1,3 +1,0 @@
-[submodule "tuple"]
-	path = tuple
-	url = http://github.com/edvorg/cpp-tuple
